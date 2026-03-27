@@ -2,8 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 @layer base {
+  :root {
+    --m3-background: #fafafa;
+    --m3-surface: #ffffff;
+    --m3-surface-variant: #f0f0f0;
+    --m3-primary: #000000;
+    --m3-primary-container: #e5e5e5;
+    --m3-on-primary: #ffffff;
+    --m3-on-primary-container: #000000;
+    --m3-secondary: #525252;
+    --m3-secondary-container: #f0f0f0;
+    --m3-tertiary: #737373;
+    --m3-tertiary-container: #f0f0f0;
+    --m3-on-surface: #000000;
+    --m3-on-surface-variant: #525252;
+    --m3-outline: #d4d4d4;
+    --m3-shadow: rgba(0, 0, 0, 0.08);
+  }
+
+  .dark {
+    --m3-background: #0a0a0a;
+    --m3-surface: #171717;
+    --m3-surface-variant: #262626;
+    --m3-primary: #ffffff;
+    --m3-primary-container: #404040;
+    --m3-on-primary: #000000;
+    --m3-on-primary-container: #ffffff;
+    --m3-secondary: #d4d4d4;
+    --m3-secondary-container: #262626;
+    --m3-tertiary: #a3a3a3;
+    --m3-tertiary-container: #262626;
+    --m3-on-surface: #ffffff;
+    --m3-on-surface-variant: #d4d4d4;
+    --m3-outline: #404040;
+    --m3-shadow: rgba(0, 0, 0, 0.4);
+  }
+
   body {
-    @apply bg-black text-neutral-100 antialiased;
+    background-color: var(--m3-background);
+    color: var(--m3-on-surface);
+    antialiased: true;
+    font-family: 'Roboto', sans-serif;
+  }
+}
+
+@layer components {
+  .m3-elevated-card {
+    background-color: var(--m3-surface);
+    border: 1px solid var(--m3-outline);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .m3-filled-card {
+    background-color: var(--m3-surface);
+    border: 1px solid var(--m3-outline);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .m3-title-large {
+    @apply text-3xl font-normal tracking-normal;
+  }
+
+  .m3-label-medium {
+    @apply text-xs font-medium uppercase tracking-wider;
+  }
+
+  .m3-display-medium {
+    @apply text-4xl font-normal;
+  }
+
+  .m3-linear-progress {
+    @apply h-2 rounded-full overflow-hidden;
+    background-color: var(--m3-surface-variant);
+  }
+
+  .m3-linear-progress-bar {
+    @apply h-full rounded-full;
+    background-color: var(--m3-primary);
   }
 }

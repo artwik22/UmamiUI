@@ -19,16 +19,18 @@ export default function DateFilter() {
   };
 
   return (
-    <div className="flex bg-neutral-900 rounded-lg p-1 border border-neutral-800">
+    <div className="inline-flex rounded-xl p-1 bg-m3-surface-variant">
       {ranges.map((range) => (
         <button
           key={range.value}
           onClick={() => handleValueChange(range.value)}
-          className={`px-3 py-1 text-sm rounded-md transition-colors ${
-            currentRange === range.value
-              ? "bg-neutral-800 text-white"
-              : "text-neutral-400 hover:text-white"
-          }`}
+          className={`
+            px-4 py-2 text-sm font-medium rounded-md transition-all duration-200
+            ${currentRange === range.value
+              ? "bg-m3-primary text-m3-on-primary shadow-sm"
+              : "text-m3-on-surface-variant hover:text-m3-on-surface hover:bg-m3-surface"
+            }
+          `}
         >
           {range.label}
         </button>
