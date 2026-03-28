@@ -96,7 +96,8 @@ export async function getPageviews(range: string, websiteId?: string) {
   }
 
   const params = getRangeParams(range);
-  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/pageviews?startAt=${params.startAt}&endAt=${params.endAt}&unit=day&timezone=UTC`;
+  const unit = range === '1d' ? 'hour' : 'day';
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/pageviews?startAt=${params.startAt}&endAt=${params.endAt}&unit=${unit}&timezone=UTC`;
   
   const data = await httpGet<any>(url);
   

@@ -16,10 +16,11 @@ interface DashboardContentProps {
     bounceRate: number;
     avgSession: number;
   };
-  chartData: { name: string; value: number }[];
+  chartData: { date: string; pageviews: number; uniques: number }[];
   topQueries: { name: string; value: number }[];
   topReferrers: { name: string; value: number }[];
   topDevices: { name: string; value: number }[];
+  range: string;
 }
 
 export default function DashboardContent({
@@ -28,6 +29,7 @@ export default function DashboardContent({
   topQueries,
   topReferrers,
   topDevices,
+  range,
 }: DashboardContentProps) {
   return (
     <main className="min-h-screen text-[var(--text-primary)]">
@@ -63,7 +65,7 @@ export default function DashboardContent({
         </section>
 
         <section className="mb-8">
-          <UmamiChart data={chartData} />
+          <UmamiChart data={chartData} range={range} />
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">

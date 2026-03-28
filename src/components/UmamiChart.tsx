@@ -7,24 +7,27 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
 interface Props {
   data: any[];
+  range: string;
 }
 
-function formatDate(dateStr: string | number): string {
+function formatDate(dateStr: string | number, range: string): string {
   const date = new Date(dateStr);
+  if (range === '1d') {
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+  }
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+function CustomTooltip({ active, payload, label, range }: any) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[var(--surface)] border border-[var(--border)] p-3 rounded-lg shadow-lg">
-        <p className="text-[var(--text-secondary)] text-sm mb-2">{formatDate(label)}</p>
+        <p className="text-[var(--text-secondary)] text-sm mb-2">{formatDate(label, range)}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm" style={{ color: entry.color }}>
             {entry.name}: {entry.value.toLocaleString()}
@@ -36,7 +39,7 @@ function CustomTooltip({ active, payload, label }: any) {
   return null;
 }
 
-export default function UmamiChart({ data }: Props) {
+export default function UmamiChart({ data, range }: Props) {
   return (
     <div className="card p-6">
       <div className="flex items-center justify-between mb-6">
@@ -62,7 +65,7 @@ export default function UmamiChart({ data }: Props) {
             <XAxis 
               dataKey="date" 
               stroke="var(--text-muted)"
-              tickFormatter={formatDate}
+              tickFormatter={(val) => formatDate(val, range)}
               tick={{ fontSize: 12 }}
               axisLine={false}
               tickLine={false}
@@ -76,7 +79,7 @@ export default function UmamiChart({ data }: Props) {
               tickLine={false}
               dx={-10}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip range={range} />} />
             <Line
               type="monotone"
               dataKey="pageviews"

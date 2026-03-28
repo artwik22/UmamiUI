@@ -27,6 +27,7 @@ export default async function Dashboard({
         topQueries={topQueries}
         topReferrers={topReferrers}
         topDevices={topDevices}
+        range={range}
       />
     </AuthGuard>
   );
