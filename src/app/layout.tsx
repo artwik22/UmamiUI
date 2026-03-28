@@ -28,7 +28,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-m3-background text-m3-on-surface">
+      <body className="bg-[var(--bg)] text-[var(--text-primary)] transition-colors duration-300">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

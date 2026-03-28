@@ -1,5 +1,7 @@
 'use client';
 
+import { motion } from 'framer-motion';
+
 interface Props {
   stats: {
     pageviews: number;
@@ -40,10 +42,10 @@ const icons = {
 };
 
 const iconBg = {
-  pageviews: 'bg-gray-100 dark:bg-gray-800',
-  visitors: 'bg-gray-100 dark:bg-gray-800',
-  bounce: 'bg-gray-100 dark:bg-gray-800',
-  session: 'bg-gray-100 dark:bg-gray-800',
+  pageviews: 'bg-gray-100 dark:bg-gray-900',
+  visitors: 'bg-gray-100 dark:bg-gray-900',
+  bounce: 'bg-gray-100 dark:bg-gray-900',
+  session: 'bg-gray-100 dark:bg-gray-900',
 };
 
 export default function KPICards({ stats }: Props) {
@@ -85,10 +87,13 @@ export default function KPICards({ stats }: Props) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card, index) => (
-        <div
+        <motion.div
           key={card.key}
-          className="card card-hover flex flex-col justify-between min-h-[140px] opacity-0 animate-slide-up"
-          style={{ animationDelay: `${index * 0.1}s` }}
+          className="card flex flex-col justify-between min-h-[140px]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          whileHover={{ y: -4 }}
         >
           <div className="flex items-start justify-between">
             <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
@@ -106,12 +111,12 @@ export default function KPICards({ stats }: Props) {
             </p>
             <div className="flex items-center justify-between mt-2">
               <p className="text-xs text-[var(--text-muted)]">{card.subtext}</p>
-              <span className={`text-xs font-medium ${card.trendUp ? 'text-emerald-500' : 'text-rose-500'}`}>
+              <span className="text-xs font-medium text-[var(--text-muted)]">
                 {card.trend}
               </span>
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
     </div>
   );
