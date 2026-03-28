@@ -26,12 +26,14 @@ function formatDate(dateStr: string | number, range: string, timeFormat: '12h' |
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function CustomTooltip({ active, payload, label, range, timeFormat }: any) {
+function CustomTooltip({ active, payload, label, range, timeFormat, selectedMetric }: any) {
   if (active && payload && payload.length) {
+    const filteredPayload = payload.filter((p: any) => p.dataKey === selectedMetric);
+    if (filteredPayload.length === 0) return null;
     return (
       <div className="bg-[var(--surface)] border border-[var(--border)] p-2 md:p-3 rounded-lg shadow-lg">
         <p className="text-[var(--text-secondary)] text-xs md:text-sm mb-2">{formatDate(label, range, timeFormat)}</p>
-        {payload.map((entry: any, index: number) => (
+        {filteredPayload.map((entry: any, index: number) => (
           <p key={index} className="text-xs md:text-sm" style={{ color: entry.color }}>
             {entry.name}: {entry.value.toLocaleString()}
           </p>
@@ -128,25 +130,53 @@ export default function UmamiChart({ data, range }: Props) {
               dx={-10}
               domain={[0, 'auto']}
             />
-            <Tooltip content={<CustomTooltip range={range} timeFormat={timeFormat} />} />
+            <Tooltip content={<CustomTooltip range={range} timeFormat={timeFormat} selectedMetric={selectedMetric} />} />
             
             <Area
               type="monotone"
-              dataKey={config.key}
-              fill={`url(#${config.gradient})`}
+              dataKey="pageviews"
+              fill="url(#gradientPageviews)"
               stroke="none"
               strokeWidth={0}
-              isAnimationActive={false}
+              isAnimationActive={true}
+              animationDuration={300}
+              animationEasing="ease-in-out"
+              fillOpacity={selectedMetric === 'pageviews' ? 1 : 0}
             />
             <Line
               type="monotone"
-              dataKey={config.key}
-              stroke={config.color}
+              dataKey="pageviews"
+              stroke={selectedMetric === 'pageviews' ? 'var(--chart-1)' : 'transparent'}
               strokeWidth={3}
-              dot={{ fill: config.color, strokeWidth: 0, r: 4 }}
-              activeDot={{ r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 }}
-              name={config.name}
-              isAnimationActive={false}
+              dot={selectedMetric === 'pageviews' ? { fill: 'var(--chart-1)', strokeWidth: 0, r: 4 } : false}
+              activeDot={selectedMetric === 'pageviews' ? { r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 } : false}
+              name="Pageviews"
+              isAnimationActive={true}
+              animationDuration={300}
+              animationEasing="ease-in-out"
+            />
+            <Area
+              type="monotone"
+              dataKey="uniques"
+              fill="url(#gradientUniques)"
+              stroke="none"
+              strokeWidth={0}
+              isAnimationActive={true}
+              animationDuration={300}
+              animationEasing="ease-in-out"
+              fillOpacity={selectedMetric === 'uniques' ? 1 : 0}
+            />
+            <Line
+              type="monotone"
+              dataKey="uniques"
+              stroke={selectedMetric === 'uniques' ? 'var(--chart-2)' : 'transparent'}
+              strokeWidth={3}
+              dot={selectedMetric === 'uniques' ? { fill: 'var(--chart-2)', strokeWidth: 0, r: 4 } : false}
+              activeDot={selectedMetric === 'uniques' ? { r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 } : false}
+              name="Unique Visitors"
+              isAnimationActive={true}
+              animationDuration={300}
+              animationEasing="ease-in-out"
             />
           </LineChart>
         </ResponsiveContainer>
