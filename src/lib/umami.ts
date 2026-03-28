@@ -104,8 +104,8 @@ export async function getPageviews(range: string, websiteId?: string) {
   const pageviews = data.pageviews || [];
   return pageviews.map((item: any) => ({
     date: item.x,
-    pageviews: item.y,
-    uniques: item.z,
+    pageviews: item.y ?? 0,
+    uniques: item.z ?? 0,
   }));
 }
 
@@ -143,4 +143,18 @@ export async function getMetrics(range: string, type: string, websiteId?: string
     name: item.x,
     value: item.y,
   }));
+}
+
+export async function getActiveVisitors(websiteId?: string) {
+  const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
+  
+  if (!UMAMI_API_CLIENT_ENDPOINT || !targetWebsiteId) {
+    throw new Error('Missing required Umami API environment variables');
+  }
+
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/active`;
+  
+  const data = await httpGet<any>(url);
+  
+  return data.x ?? 0;
 }

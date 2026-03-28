@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   LineChart,
   Line,
@@ -41,22 +42,56 @@ function CustomTooltip({ active, payload, label, range }: any) {
 }
 
 export default function UmamiChart({ data, range }: Props) {
+  console.log('UmamiChart data:', data);
+  const [selectedMetric, setSelectedMetric] = useState<'pageviews' | 'uniques'>('pageviews');
+  
+  const metricConfig = {
+    pageviews: {
+      key: 'pageviews',
+      color: 'var(--chart-1)',
+      gradient: 'gradientPageviews',
+      name: 'Pageviews'
+    },
+    uniques: {
+      key: 'uniques',
+      color: 'var(--chart-2)',
+      gradient: 'gradientUniques',
+      name: 'Unique Visitors'
+    }
+  };
+
+  const config = metricConfig[selectedMetric];
+
   return (
     <div className="card p-1 md:p-2 h-[400px] md:h-[500px] flex flex-col">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-1 md:mb-2 gap-1">
         <div>
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">Traffic Overview</h3>
-          <p className="text-sm text-[var(--text-secondary)]">Pageviews and unique visitors</p>
+          <p className="text-sm text-[var(--text-secondary)]">
+            {config.name}
+          </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[var(--chart-1)]"></span>
-            <span className="text-xs md:text-sm text-[var(--text-muted)]">Pageviews</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[var(--chart-2)]"></span>
-            <span className="text-xs md:text-sm text-[var(--text-muted)]">Visitors</span>
-          </div>
+        <div className="flex items-center bg-[var(--surface-elevated)] rounded-lg p-1">
+          <button
+            onClick={() => setSelectedMetric('pageviews')}
+            className={`px-3 py-1 text-xs md:text-sm rounded-md transition-colors ${
+              selectedMetric === 'pageviews'
+                ? 'bg-[var(--chart-1)] text-[var(--bg)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            Pageviews
+          </button>
+          <button
+            onClick={() => setSelectedMetric('uniques')}
+            className={`px-3 py-1 text-xs md:text-sm rounded-md transition-colors ${
+              selectedMetric === 'uniques'
+                ? 'bg-[var(--chart-2)] text-[var(--bg)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            Visitors
+          </button>
         </div>
       </div>
       <div className="flex-1 min-h-0">
@@ -89,39 +124,27 @@ export default function UmamiChart({ data, range }: Props) {
               axisLine={false}
               tickLine={false}
               dx={-10}
+              domain={[0, 'auto']}
             />
             <Tooltip content={<CustomTooltip range={range} />} />
+            
             <Area
               type="monotone"
-              dataKey="pageviews"
-              fill="url(#gradientPageviews)"
+              dataKey={config.key}
+              fill={`url(#${config.gradient})`}
               stroke="none"
               strokeWidth={0}
+              isAnimationActive={false}
             />
             <Line
               type="monotone"
-              dataKey="pageviews"
-              stroke="var(--chart-1)"
+              dataKey={config.key}
+              stroke={config.color}
               strokeWidth={3}
-              dot={{ fill: "var(--chart-1)", strokeWidth: 0, r: 4 }}
+              dot={{ fill: config.color, strokeWidth: 0, r: 4 }}
               activeDot={{ r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 }}
-              name="Pageviews"
-            />
-            <Area
-              type="monotone"
-              dataKey="uniques"
-              fill="url(#gradientUniques)"
-              stroke="none"
-              strokeWidth={0}
-            />
-            <Line
-              type="monotone"
-              dataKey="uniques"
-              stroke="var(--chart-2)"
-              strokeWidth={3}
-              dot={{ fill: "var(--chart-2)", strokeWidth: 0, r: 4 }}
-              activeDot={{ r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 }}
-              name="Unique Visitors"
+              name={config.name}
+              isAnimationActive={false}
             />
           </LineChart>
         </ResponsiveContainer>

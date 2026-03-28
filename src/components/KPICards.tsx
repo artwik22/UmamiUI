@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { getActiveVisitors } from '../lib/umami';
 
 interface Props {
   stats: {
@@ -39,6 +41,11 @@ const icons = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   ),
+  active: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  ),
 };
 
 const iconBg = {
@@ -46,10 +53,36 @@ const iconBg = {
   visitors: 'bg-[var(--surface)]',
   bounce: 'bg-[var(--surface)]',
   session: 'bg-[var(--surface)]',
+  active: 'bg-[var(--surface)]',
 };
 
 export default function KPICards({ stats }: Props) {
+  const [activeUsers, setActiveUsers] = useState(0);
+
+  useEffect(() => {
+    const fetchActiveUsers = async () => {
+      try {
+        const count = await getActiveVisitors();
+        setActiveUsers(count);
+      } catch (error) {
+        console.error('Failed to fetch active users', error);
+      }
+    };
+
+    fetchActiveUsers();
+    const interval = setInterval(fetchActiveUsers, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const cards = [
+    { 
+      key: 'active',
+      label: 'Live Users', 
+      value: activeUsers.toString(),
+      subtext: 'Currently active',
+      trend: '',
+      trendUp: true 
+    },
     { 
       key: 'pageviews',
       label: 'Pageviews', 
@@ -85,7 +118,7 @@ export default function KPICards({ stats }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {cards.map((card, index) => (
         <motion.div
           key={card.key}
@@ -111,9 +144,11 @@ export default function KPICards({ stats }: Props) {
             </p>
             <div className="flex items-center justify-between mt-2">
               <p className="text-sm md:text-xs text-[var(--text-muted)]">{card.subtext}</p>
-              <span className={`text-sm md:text-xs font-medium ${card.key === 'bounce' ? (card.trendUp ? 'text-[var(--danger)]' : 'text-[var(--success)]') : (card.trendUp ? 'text-[var(--success)]' : 'text-[var(--danger)]')}`}>
-                {card.trend}
-              </span>
+              {card.trend && (
+                <span className={`text-sm md:text-xs font-medium ${card.key === 'bounce' ? (card.trendUp ? 'text-[var(--danger)]' : 'text-[var(--success)]') : (card.trendUp ? 'text-[var(--success)]' : 'text-[var(--danger)]')}`}>
+                  {card.trend}
+                </span>
+              )}
             </div>
           </div>
         </motion.div>
