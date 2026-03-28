@@ -41,8 +41,8 @@ function CustomTooltip({ active, payload, label, range }: any) {
 
 export default function UmamiChart({ data, range }: Props) {
   return (
-    <div className="card p-2 md:p-4 h-[350px] md:h-[400px] flex flex-col">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 md:mb-4 gap-2">
+    <div className="card p-1 md:p-2 h-[400px] md:h-[500px] flex flex-col">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-1 md:mb-2 gap-1">
         <div>
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">Traffic Overview</h3>
           <p className="text-sm text-[var(--text-secondary)]">Pageviews and unique visitors</p>
@@ -60,7 +60,7 @@ export default function UmamiChart({ data, range }: Props) {
       </div>
       <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 0, right: 5, left: 5, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
             <XAxis 
               dataKey="date" 
