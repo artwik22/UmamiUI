@@ -63,11 +63,11 @@ export default function DashboardContent({
         </header>
 
         <section className="mb-4 md:mb-8">
-          <KPICards stats={stats} />
+          <UmamiChart data={chartData} range={range} />
         </section>
 
         <section className="mb-4 md:mb-8">
-          <UmamiChart data={chartData} range={range} />
+          <KPICards stats={stats} />
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
