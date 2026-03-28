@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Umami Dashboard - Material 3",
@@ -27,7 +28,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-m3-background text-m3-on-surface">{children}</body>
+      <body className="bg-m3-background text-m3-on-surface">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
