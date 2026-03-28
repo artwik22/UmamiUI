@@ -39,7 +39,7 @@ export default function TopLists({ title, data }: Props) {
           {data.length}
         </span>
       </div>
-      <ul className="space-y-3 md:space-y-5">
+      <ul className="space-y-4 md:space-y-5">
         {data.slice(0, 5).map((item, index) => {
           const percentage = (item.value / maxValue) * 100;
           const color = colors[index % colors.length];
@@ -53,7 +53,7 @@ export default function TopLists({ title, data }: Props) {
                   {isTopDevices && (
                     <span className="text-sm">{getDeviceIcon(item.name)}</span>
                   )}
-                  <span className="text-xs md:text-sm text-[var(--text-primary)] truncate font-medium">
+                  <span className="text-sm md:text-sm text-[var(--text-primary)] truncate font-medium">
                     {item.name}
                   </span>
                 </div>

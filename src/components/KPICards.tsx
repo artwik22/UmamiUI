@@ -85,7 +85,7 @@ export default function KPICards({ stats }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {cards.map((card, index) => (
         <motion.div
           key={card.key}
@@ -96,7 +96,7 @@ export default function KPICards({ stats }: Props) {
           whileHover={{ y: -4 }}
         >
           <div className="flex items-start justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+            <p className="text-sm font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
               {card.label}
             </p>
             <div className={`p-2 rounded-xl ${iconBg[card.key as keyof typeof iconBg]}`}>
@@ -106,12 +106,12 @@ export default function KPICards({ stats }: Props) {
             </div>
           </div>
           <div className="mt-2">
-            <p className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
+            <p className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
               {card.value}
             </p>
             <div className="flex items-center justify-between mt-2">
-              <p className="text-xs text-[var(--text-muted)]">{card.subtext}</p>
-              <span className={`text-xs font-medium ${card.key === 'bounce' ? (card.trendUp ? 'text-[var(--danger)]' : 'text-[var(--success)]') : (card.trendUp ? 'text-[var(--success)]' : 'text-[var(--danger)]')}`}>
+              <p className="text-sm md:text-xs text-[var(--text-muted)]">{card.subtext}</p>
+              <span className={`text-sm md:text-xs font-medium ${card.key === 'bounce' ? (card.trendUp ? 'text-[var(--danger)]' : 'text-[var(--success)]') : (card.trendUp ? 'text-[var(--success)]' : 'text-[var(--danger)]')}`}>
                 {card.trend}
               </span>
             </div>

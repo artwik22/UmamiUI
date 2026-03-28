@@ -27,10 +27,10 @@ function formatDate(dateStr: string | number, range: string): string {
 function CustomTooltip({ active, payload, label, range }: any) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[var(--surface)] border border-[var(--border)] p-3 rounded-lg shadow-lg">
-        <p className="text-[var(--text-secondary)] text-sm mb-2">{formatDate(label, range)}</p>
+      <div className="bg-[var(--surface)] border border-[var(--border)] p-2 md:p-3 rounded-lg shadow-lg">
+        <p className="text-[var(--text-secondary)] text-xs md:text-sm mb-2">{formatDate(label, range)}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm" style={{ color: entry.color }}>
+          <p key={index} className="text-xs md:text-sm" style={{ color: entry.color }}>
             {entry.name}: {entry.value.toLocaleString()}
           </p>
         ))}

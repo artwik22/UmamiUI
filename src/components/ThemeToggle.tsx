@@ -25,7 +25,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-elevated)] hover:border-[var(--accent)] transition-all duration-200 shadow-sm hover:shadow-md"
+      className="p-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-elevated)] transition-all duration-200 shadow-sm hover:shadow-md"
       aria-label="Toggle Theme"
     >
       {isDark ? (

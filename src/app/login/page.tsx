@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
-      <div className="w-full max-w-sm p-6 md:p-8 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="w-full max-w-sm p-4 md:p-8 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
           <p className="text-sm text-[var(--text-muted)] mt-2">
@@ -45,7 +45,7 @@ export default function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+              className="w-full px-4 py-3 md:py-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] min-h-[44px]"
               required
             />
           </div>
@@ -62,7 +62,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+              className="w-full px-4 py-3 md:py-2 rounded-lg border border-[var(--border)] bg-[var(--bg)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] min-h-[44px]"
               required
             />
           </div>
@@ -73,7 +73,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full py-2 px-4 rounded-lg bg-[var(--accent)] text-white font-medium hover:opacity-90 transition-opacity"
+            className="w-full py-3 px-4 rounded-lg bg-[var(--accent)] text-white font-medium hover:opacity-90 transition-opacity min-h-[44px]"
           >
             Sign In
           </button>

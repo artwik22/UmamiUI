@@ -33,8 +33,8 @@ export default function DashboardContent({
 }: DashboardContentProps) {
   return (
     <main className="min-h-screen text-[var(--text-primary)]">
-      <div className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-10">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-10">
+      <div className="max-w-7xl mx-auto px-4 py-6 md:px-6 md:py-8">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-4 mb-6 md:mb-10">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center shadow-sm">
               <svg className="w-6 h-6 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -48,15 +48,17 @@ export default function DashboardContent({
               <p className="text-sm text-[var(--text-muted)]">Track your website performance</p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 md:gap-3">
-            <Suspense fallback={<div className="h-10 w-44 rounded-xl bg-[var(--surface)]"></div>}>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <Suspense fallback={<div className="h-11 md:h-10 w-full sm:w-44 rounded-xl bg-[var(--surface)]"></div>}>
               <WebsiteFilter />
             </Suspense>
-            <Suspense fallback={<div className="h-10 w-40 rounded-xl bg-[var(--surface)]"></div>}>
+            <Suspense fallback={<div className="h-11 md:h-10 w-full sm:w-40 rounded-xl bg-[var(--surface)]"></div>}>
               <DateFilter />
             </Suspense>
-            <ThemeToggle />
-            <LogoutButton />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <ThemeToggle />
+              <LogoutButton />
+            </div>
           </div>
         </header>
 
