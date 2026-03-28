@@ -9,13 +9,14 @@ export default async function Dashboard({
 }) {
   const params = await searchParams;
   const range = (params.range as string) || "7d";
+  const websiteId = (params.website as string) || undefined;
 
   const [stats, chartData, topQueries, topReferrers, topDevices] = await Promise.all([
-    getStats(range),
-    getPageviews(range),
-    getMetrics(range, "query"),
-    getMetrics(range, "referrer"),
-    getMetrics(range, "browser"),
+    getStats(range, websiteId),
+    getPageviews(range, websiteId),
+    getMetrics(range, "query", websiteId),
+    getMetrics(range, "referrer", websiteId),
+    getMetrics(range, "browser", websiteId),
   ]);
 
   return (

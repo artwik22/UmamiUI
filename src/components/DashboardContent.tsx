@@ -5,6 +5,7 @@ import KPICards from "./KPICards";
 import UmamiChart from "./UmamiChart";
 import TopLists from "./TopLists";
 import DateFilter from "./DateFilter";
+import WebsiteFilter from "./WebsiteFilter";
 import ThemeToggle from "./ThemeToggle";
 import LogoutButton from "./LogoutButton";
 
@@ -34,6 +35,9 @@ export default function DashboardContent({
         <header className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
           <div className="flex items-center gap-3">
+            <Suspense fallback={<div className="h-9 w-40 rounded-lg bg-[var(--surface)]"></div>}>
+              <WebsiteFilter />
+            </Suspense>
             <Suspense fallback={<div className="h-9 w-40 rounded-lg bg-[var(--surface)]"></div>}>
               <DateFilter />
             </Suspense>

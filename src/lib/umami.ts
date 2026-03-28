@@ -68,13 +68,15 @@ function getRangeParams(range: string) {
   };
 }
 
-export async function getStats(range: string) {
-  if (!UMAMI_API_CLIENT_ENDPOINT || !UMAMI_WEBSITE_ID) {
+export async function getStats(range: string, websiteId?: string) {
+  const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
+  
+  if (!UMAMI_API_CLIENT_ENDPOINT || !targetWebsiteId) {
     throw new Error('Missing required Umami API environment variables');
   }
 
   const params = getRangeParams(range);
-  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${UMAMI_WEBSITE_ID}/stats?startAt=${params.startAt}&endAt=${params.endAt}`;
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/stats?startAt=${params.startAt}&endAt=${params.endAt}`;
   
   const data = await httpGet<any>(url);
   
@@ -86,13 +88,15 @@ export async function getStats(range: string) {
   };
 }
 
-export async function getPageviews(range: string) {
-  if (!UMAMI_API_CLIENT_ENDPOINT || !UMAMI_WEBSITE_ID) {
+export async function getPageviews(range: string, websiteId?: string) {
+  const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
+  
+  if (!UMAMI_API_CLIENT_ENDPOINT || !targetWebsiteId) {
     throw new Error('Missing required Umami API environment variables');
   }
 
   const params = getRangeParams(range);
-  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${UMAMI_WEBSITE_ID}/pageviews?startAt=${params.startAt}&endAt=${params.endAt}&unit=day&timezone=UTC`;
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/pageviews?startAt=${params.startAt}&endAt=${params.endAt}&unit=day&timezone=UTC`;
   
   const data = await httpGet<any>(url);
   
@@ -104,13 +108,33 @@ export async function getPageviews(range: string) {
   }));
 }
 
-export async function getMetrics(range: string, type: string) {
-  if (!UMAMI_API_CLIENT_ENDPOINT || !UMAMI_WEBSITE_ID) {
+export async function getWebsites() {
+  if (!UMAMI_API_CLIENT_ENDPOINT) {
+    throw new Error('Missing required Umami API environment variables');
+  }
+
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites`;
+  const data = await httpGet<any>(url);
+  
+  const websites = Array.isArray(data) ? data : data.data || data.websites || [];
+  
+  return websites.map((item: any) => ({
+    id: item.id,
+    name: item.name,
+    domain: item.domain,
+    enabled: item.enabled,
+  }));
+}
+
+export async function getMetrics(range: string, type: string, websiteId?: string) {
+  const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
+  
+  if (!UMAMI_API_CLIENT_ENDPOINT || !targetWebsiteId) {
     throw new Error('Missing required Umami API environment variables');
   }
 
   const params = getRangeParams(range);
-  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${UMAMI_WEBSITE_ID}/metrics?startAt=${params.startAt}&endAt=${params.endAt}&type=${type}`;
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/metrics?startAt=${params.startAt}&endAt=${params.endAt}&type=${type}`;
   
   const data = await httpGet<any[]>(url);
   
