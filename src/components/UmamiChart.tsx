@@ -41,8 +41,8 @@ function CustomTooltip({ active, payload, label, range }: any) {
 
 export default function UmamiChart({ data, range }: Props) {
   return (
-    <div className="card p-4 md:p-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 gap-2">
+    <div className="card p-2 md:p-4 h-[350px] md:h-[400px] flex flex-col">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-2 md:mb-4 gap-2">
         <div>
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">Traffic Overview</h3>
           <p className="text-sm text-[var(--text-secondary)]">Pageviews and unique visitors</p>
@@ -50,23 +50,23 @@ export default function UmamiChart({ data, range }: Props) {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[var(--chart-1)]"></span>
-            <span className="text-sm text-[var(--text-muted)]">Pageviews</span>
+            <span className="text-xs md:text-sm text-[var(--text-muted)]">Pageviews</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[var(--chart-2)]"></span>
-            <span className="text-sm text-[var(--text-muted)]">Visitors</span>
+            <span className="text-xs md:text-sm text-[var(--text-muted)]">Visitors</span>
           </div>
         </div>
       </div>
-      <div className="h-96 md:h-80">
+      <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
             <XAxis 
               dataKey="date" 
               stroke="var(--text-muted)"
               tickFormatter={(val) => formatDate(val, range)}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               dy={10}
@@ -74,7 +74,7 @@ export default function UmamiChart({ data, range }: Props) {
             <YAxis 
               stroke="var(--text-muted)"
               tickFormatter={(n) => n.toLocaleString()}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               dx={-10}
