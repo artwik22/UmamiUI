@@ -34,7 +34,7 @@ export default function WebsiteFilter() {
   }, []);
 
   if (!mounted) {
-    return <div className="h-9 w-40 rounded-lg bg-[var(--surface)]"></div>;
+    return <div className="h-10 w-44 rounded-xl bg-[var(--surface)]"></div>;
   }
 
   const handleValueChange = (value: string) => {
@@ -48,7 +48,7 @@ export default function WebsiteFilter() {
   };
 
   if (loading) {
-    return <div className="h-9 w-40 rounded-lg bg-[var(--surface)] animate-pulse"></div>;
+    return <div className="h-10 w-44 rounded-xl bg-[var(--surface)] animate-pulse"></div>;
   }
 
   if (websites.length <= 1) {
@@ -61,11 +61,11 @@ export default function WebsiteFilter() {
     <select
       value={currentWebsiteId || defaultWebsiteId}
       onChange={(e) => handleValueChange(e.target.value)}
-      className="h-9 px-3 text-sm font-medium bg-[var(--surface)] text-[var(--text-primary)] rounded-lg border border-[var(--border)] cursor-pointer hover:bg-[var(--surface-elevated)] transition-colors outline-none"
+      className="h-10 px-4 text-sm font-medium bg-[var(--surface)] text-[var(--text-primary)] rounded-xl border border-[var(--border)] cursor-pointer hover:bg-[var(--surface-elevated)] hover:border-[var(--accent)] transition-all outline-none shadow-sm"
     >
       {websites.map((website) => (
         <option key={website.id} value={website.id}>
-          {website.name} ({website.domain})
+          {website.name}
         </option>
       ))}
     </select>

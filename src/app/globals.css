@@ -4,31 +4,61 @@
 
 @layer base {
   :root {
-    --bg: #ffffff;
-    --surface: #f8f9fa;
+    --bg: #fafbfc;
+    --surface: #f3f4f6;
     --surface-elevated: #ffffff;
     --border: #e5e7eb;
     --text-primary: #111827;
-    --text-secondary: #6b7280;
+    --text-secondary: #4b5563;
     --text-muted: #9ca3af;
-    --accent: #111827;
+    --accent: #374151;
     --accent-subtle: #f3f4f6;
+    --accent-hover: #1f2937;
+    --success: #10b981;
+    --success-subtle: #d1fae5;
+    --warning: #f59e0b;
+    --warning-subtle: #fef3c7;
+    --danger: #ef4444;
+    --danger-subtle: #fee2e2;
+    --chart-1: #374151;
+    --chart-2: #6b7280;
+    --chart-3: #9ca3af;
+    --chart-4: #d1d5db;
+    --chart-5: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
 
   .dark {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface-elevated: #262626;
-    --border: #333333;
-    --text-primary: #fafafa;
+    --bg: #000000;
+    --surface: #0e0e0e;
+    --surface-elevated: #1a1a1a;
+    --border: #262626;
+    --text-primary: #f5f5f5;
     --text-secondary: #a3a3a3;
-    --text-muted: #525252;
-    --accent: #fafafa;
-    --accent-subtle: #2a2a2a;
+    --text-muted: #666666;
+    --accent: #e5e5e5;
+    --accent-subtle: #1a1a1a;
+    --accent-hover: #ffffff;
+    --success: #34d399;
+    --success-subtle: #064e3b;
+    --warning: #fbbf24;
+    --warning-subtle: #78350f;
+    --danger: #f87171;
+    --danger-subtle: #7f1d1d;
+    --chart-1: #e5e5e5;
+    --chart-2: #a3a3a3;
+    --chart-3: #737373;
+    --chart-4: #525252;
+    --chart-5: #262626;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.6), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.5);
   }
 
   body {
-    background-color: var(--bg);
+    background: var(--bg);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -39,8 +69,19 @@
   .card {
     background-color: var(--surface-elevated);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-glow {
+    position: relative;
   }
 
   .card-hover {
@@ -48,24 +89,73 @@
   }
 
   .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
-
-  .dark .card-hover:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
   }
 
   .progress-bar {
-    height: 6px;
+    height: 8px;
     background-color: var(--surface);
-    border-radius: 3px;
+    border-radius: 4px;
     overflow: hidden;
   }
 
   .progress-bar-fill {
     height: 100%;
-    border-radius: 3px;
-    transition: width 0.3s ease;
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: var(--chart-1);
   }
+
+  .gradient-text {
+    color: var(--text-primary);
+  }
+
+  .stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .stat-badge-success {
+    background-color: var(--success-subtle);
+    color: var(--success);
+  }
+
+  .stat-badge-warning {
+    background-color: var(--warning-subtle);
+    color: var(--warning);
+  }
+
+  .stat-badge-danger {
+    background-color: var(--danger-subtle);
+    color: var(--danger);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
 }

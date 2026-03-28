@@ -25,13 +25,13 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-elevated)] transition-colors"
+      className="p-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-elevated)] hover:border-[var(--accent)] transition-all duration-200 shadow-sm hover:shadow-md"
       aria-label="Toggle Theme"
     >
       {isDark ? (
-        <SunIcon className="w-5 h-5 text-[var(--text-primary)]" />
+        <SunIcon className="w-5 h-5 text-amber-500" />
       ) : (
-        <MoonIcon className="w-5 h-5 text-[var(--text-primary)]" />
+        <MoonIcon className="w-5 h-5 text-indigo-500" />
       )}
     </button>
   );
