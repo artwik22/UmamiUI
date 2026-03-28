@@ -42,10 +42,10 @@ const icons = {
 };
 
 const iconBg = {
-  pageviews: 'bg-gray-100 dark:bg-gray-900',
-  visitors: 'bg-gray-100 dark:bg-gray-900',
-  bounce: 'bg-gray-100 dark:bg-gray-900',
-  session: 'bg-gray-100 dark:bg-gray-900',
+  pageviews: 'bg-[var(--surface)]',
+  visitors: 'bg-[var(--surface)]',
+  bounce: 'bg-[var(--surface)]',
+  session: 'bg-[var(--surface)]',
 };
 
 export default function KPICards({ stats }: Props) {
@@ -106,7 +106,7 @@ export default function KPICards({ stats }: Props) {
             </div>
           </div>
           <div className="mt-2">
-            <p className="text-3xl font-bold text-[var(--text-primary)]">
+            <p className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">
               {card.value}
             </p>
             <div className="flex items-center justify-between mt-2">

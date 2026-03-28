@@ -19,13 +19,13 @@ export default function DateFilter() {
   };
 
   return (
-    <div className="flex items-center gap-1 p-1.5 bg-[var(--surface)] rounded-xl border border-[var(--border)] shadow-sm">
+    <div className="flex items-center gap-1 p-1.5 bg-[var(--surface)] rounded-xl border border-[var(--border)] shadow-sm h-10">
       {ranges.map((range) => (
         <button
           key={range.value}
           onClick={() => handleValueChange(range.value)}
           className={`
-            px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200
+            px-3 py-1.5 md:px-4 md:py-2 text-sm font-semibold rounded-lg transition-all duration-200 min-w-[44px]
             ${currentRange === range.value
               ? "bg-[var(--accent)] text-[var(--bg)] shadow-sm"
               : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)]"

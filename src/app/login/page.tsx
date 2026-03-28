@@ -24,7 +24,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
-      <div className="w-full max-w-sm p-8 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
+      <div className="w-full max-w-sm p-6 md:p-8 rounded-xl border border-[var(--border)] bg-[var(--surface)]">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
           <p className="text-sm text-[var(--text-muted)] mt-2">

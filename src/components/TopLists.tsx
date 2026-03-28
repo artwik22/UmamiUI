@@ -39,21 +39,21 @@ export default function TopLists({ title, data }: Props) {
           {data.length}
         </span>
       </div>
-      <ul className="space-y-5">
+      <ul className="space-y-3 md:space-y-5">
         {data.slice(0, 5).map((item, index) => {
           const percentage = (item.value / maxValue) * 100;
           const color = colors[index % colors.length];
           return (
             <li key={item.name} className="group">
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="w-5 h-5 flex items-center justify-center text-xs font-medium text-[var(--text-muted)] bg-[var(--surface)] rounded-md">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-6 h-6 flex items-center justify-center text-xs font-medium text-[var(--text-muted)] bg-[var(--surface)] rounded-md">
                     {index + 1}
                   </span>
                   {isTopDevices && (
-                    <span className="text-base">{getDeviceIcon(item.name)}</span>
+                    <span className="text-sm">{getDeviceIcon(item.name)}</span>
                   )}
-                  <span className="text-sm text-[var(--text-primary)] truncate font-medium">
+                  <span className="text-xs md:text-sm text-[var(--text-primary)] truncate font-medium">
                     {item.name}
                   </span>
                 </div>

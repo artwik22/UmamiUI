@@ -61,7 +61,7 @@ export default function WebsiteFilter() {
     <select
       value={currentWebsiteId || defaultWebsiteId}
       onChange={(e) => handleValueChange(e.target.value)}
-      className="h-10 px-4 text-sm font-medium bg-[var(--surface)] text-[var(--text-primary)] rounded-xl border border-[var(--border)] cursor-pointer hover:bg-[var(--surface-elevated)] hover:border-[var(--accent)] transition-all outline-none shadow-sm"
+      className="h-10 px-3 md:px-4 text-sm font-medium bg-[var(--surface)] text-[var(--text-primary)] rounded-xl border border-[var(--border)] cursor-pointer hover:bg-[var(--surface-elevated)] hover:border-[var(--accent)] transition-all outline-none shadow-sm"
     >
       {websites.map((website) => (
         <option key={website.id} value={website.id}>
