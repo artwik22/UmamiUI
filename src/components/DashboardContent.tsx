@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import KPICards from "./KPICards";
 import UmamiChart from "./UmamiChart";
 import TopLists from "./TopLists";
@@ -8,6 +8,9 @@ import DateFilter from "./DateFilter";
 import WebsiteFilter from "./WebsiteFilter";
 import ThemeToggle from "./ThemeToggle";
 import LogoutButton from "./LogoutButton";
+import SettingsModal from "./SettingsModal";
+import SidePanel from "./SidePanel";
+import { Bars3Icon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 interface DashboardContentProps {
   stats: {
@@ -31,25 +34,12 @@ export default function DashboardContent({
   topDevices,
   range,
 }: DashboardContentProps) {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+
   return (
     <main className="min-h-screen text-[var(--text-primary)]">
       <div className="max-w-7xl mx-auto px-4 py-6 md:px-6 md:py-8">
-        <header className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center shadow-sm">
-              <svg className="w-6 h-6 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-                Analytics
-              </h1>
-              <p className="text-sm text-[var(--text-muted)]">Track your website performance</p>
-            </div>
-          </div>
-        </header>
-
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6 md:mb-10 w-full">
           <Suspense fallback={<div className="h-11 md:h-10 w-full sm:w-44 rounded-xl bg-[var(--surface)]"></div>}>
             <WebsiteFilter />
@@ -57,11 +47,57 @@ export default function DashboardContent({
           <Suspense fallback={<div className="h-11 md:h-10 w-full sm:w-40 rounded-xl bg-[var(--surface)]"></div>}>
             <DateFilter />
           </Suspense>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeToggle />
-            <LogoutButton />
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            <button
+              onClick={() => setIsPanelOpen(true)}
+              className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <Bars3Icon className="w-6 h-6" />
+            </button>
           </div>
         </div>
+
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        <SidePanel 
+          isOpen={isPanelOpen} 
+          onClose={() => setIsPanelOpen(false)} 
+          title="Menu"
+        >
+          <div className="flex flex-col gap-4">
+            <button
+              onClick={() => {
+                setIsSettingsOpen(true);
+                setIsPanelOpen(false);
+              }}
+              className="flex items-center gap-2 text-sm text-[var(--text-primary)] p-2 rounded-md hover:bg-[var(--surface-elevated)]"
+            >
+              <Cog6ToothIcon className="w-5 h-5" />
+              Settings
+            </button>
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[var(--border)]">
+              <ThemeToggle />
+              <div className="flex-1">
+                <LogoutButton />
+              </div>
+            </div>
+          </div>
+        </SidePanel>
+        
+        <section className="mb-4 md:mb-8">
+          <UmamiChart data={chartData} range={range} />
+        </section>
+
+        <section className="mb-4 md:mb-8">
+          <KPICards stats={stats} />
+        </section>
+
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <TopLists title="Top Pages" data={topQueries} />
+          <TopLists title="Top Referrers" data={topReferrers} />
+          <TopLists title="Top Devices" data={topDevices} />
+        </section>
+        
+        {/* ... rest of the file ... */}
 
         <section className="mb-4 md:mb-8">
           <UmamiChart data={chartData} range={range} />

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSettings } from '../context/SettingsContext';
 import {
   LineChart,
   Line,
@@ -17,19 +18,19 @@ interface Props {
   range: string;
 }
 
-function formatDate(dateStr: string | number, range: string): string {
+function formatDate(dateStr: string | number, range: string, timeFormat: '12h' | '24h'): string {
   const date = new Date(dateStr);
   if (range === '1d') {
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: timeFormat === '12h' });
   }
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function CustomTooltip({ active, payload, label, range }: any) {
+function CustomTooltip({ active, payload, label, range, timeFormat }: any) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[var(--surface)] border border-[var(--border)] p-2 md:p-3 rounded-lg shadow-lg">
-        <p className="text-[var(--text-secondary)] text-xs md:text-sm mb-2">{formatDate(label, range)}</p>
+        <p className="text-[var(--text-secondary)] text-xs md:text-sm mb-2">{formatDate(label, range, timeFormat)}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-xs md:text-sm" style={{ color: entry.color }}>
             {entry.name}: {entry.value.toLocaleString()}
@@ -44,6 +45,7 @@ function CustomTooltip({ active, payload, label, range }: any) {
 export default function UmamiChart({ data, range }: Props) {
   console.log('UmamiChart data:', data);
   const [selectedMetric, setSelectedMetric] = useState<'pageviews' | 'uniques'>('pageviews');
+  const { timeFormat } = useSettings();
   
   const metricConfig = {
     pageviews: {
@@ -111,7 +113,7 @@ export default function UmamiChart({ data, range }: Props) {
             <XAxis 
               dataKey="date" 
               stroke="var(--text-muted)"
-              tickFormatter={(val) => formatDate(val, range)}
+              tickFormatter={(val) => formatDate(val, range, timeFormat)}
               tick={{ fontSize: 11 }}
               axisLine={false}
               tickLine={false}
@@ -126,7 +128,7 @@ export default function UmamiChart({ data, range }: Props) {
               dx={-10}
               domain={[0, 'auto']}
             />
-            <Tooltip content={<CustomTooltip range={range} />} />
+            <Tooltip content={<CustomTooltip range={range} timeFormat={timeFormat} />} />
             
             <Area
               type="monotone"

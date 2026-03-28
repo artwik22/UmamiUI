@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
+import { SettingsProvider } from "@/context/SettingsContext";
 
 export const metadata: Metadata = {
   title: "Umami Dashboard - Material 3",
@@ -29,7 +30,11 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[var(--bg)] text-[var(--text-primary)] transition-colors duration-300">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <SettingsProvider>
+            {children}
+          </SettingsProvider>
+        </AuthProvider>
       </body>
     </html>
   );

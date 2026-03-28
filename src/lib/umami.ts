@@ -145,16 +145,3 @@ export async function getMetrics(range: string, type: string, websiteId?: string
   }));
 }
 
-export async function getActiveVisitors(websiteId?: string) {
-  const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
-  
-  if (!UMAMI_API_CLIENT_ENDPOINT || !targetWebsiteId) {
-    throw new Error('Missing required Umami API environment variables');
-  }
-
-  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/active`;
-  
-  const data = await httpGet<any>(url);
-  
-  return data.x ?? 0;
-}
