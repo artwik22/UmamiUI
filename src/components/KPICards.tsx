@@ -111,7 +111,7 @@ export default function KPICards({ stats }: Props) {
             </p>
             <div className="flex items-center justify-between mt-2">
               <p className="text-xs text-[var(--text-muted)]">{card.subtext}</p>
-              <span className="text-xs font-medium text-[var(--text-muted)]">
+              <span className={`text-xs font-medium ${card.key === 'bounce' ? (card.trendUp ? 'text-[var(--danger)]' : 'text-[var(--success)]') : (card.trendUp ? 'text-[var(--success)]' : 'text-[var(--danger)]')}`}>
                 {card.trend}
               </span>
             </div>

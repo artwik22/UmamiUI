@@ -31,10 +31,10 @@
   }
 
   .dark {
-    --bg: #18181b;
-    --surface: #27272a;
-    --surface-elevated: #3f3f46;
-    --border: #52525b;
+    --bg: #090909;
+    --surface: #181818;
+    --surface-elevated: #121212;
+    --border: #1F1F1F;
     --text-primary: #fafafa;
     --text-secondary: #d4d4d8;
     --text-muted: #a1a1aa;
