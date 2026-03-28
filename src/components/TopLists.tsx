@@ -5,54 +5,48 @@ interface Props {
   data: { name: string; value: number }[];
 }
 
-const getDeviceIcon = (name: string) => {
-  const lowerName = name.toLowerCase();
-  if (lowerName.includes('chrome')) return 'chrome_reader_mode';
-  if (lowerName.includes('firefox')) return 'firefox';
-  if (lowerName.includes('safari')) return 'safari';
-  if (lowerName.includes('edge')) return 'edge';
-  if (lowerName.includes('ios') || lowerName.includes('iphone') || lowerName.includes('ipad')) return 'phone_iphone';
-  if (lowerName.includes('android')) return 'android';
-  if (lowerName.includes('mac') || lowerName.includes('macos')) return 'laptop_mac';
-  if (lowerName.includes('windows')) return 'desktop_windows';
-  if (lowerName.includes('linux')) return 'terminal';
-  return 'language';
+const getDeviceIcon = (name: string): string => {
+  const lower = name.toLowerCase();
+  if (lower.includes('chrome')) return '🟢';
+  if (lower.includes('firefox')) return '🦊';
+  if (lower.includes('safari')) return '🧭';
+  if (lower.includes('edge')) return '🔷';
+  if (lower.includes('ios') || lower.includes('iphone') || lower.includes('ipad')) return '📱';
+  if (lower.includes('android')) return '🤖';
+  if (lower.includes('mac') || lower.includes('macos')) return '🍎';
+  if (lower.includes('windows')) return '🪟';
+  if (lower.includes('linux')) return '🐧';
+  return '💻';
 };
 
 export default function TopLists({ title, data }: Props) {
   const maxValue = Math.max(...data.map((item) => item.value));
-
-  const colors = [
-    'bg-black dark:bg-white',
-    'bg-blue-600',
-    'bg-green-600',
-    'bg-orange-500',
-  ];
-
   const isTopDevices = title.toLowerCase().includes('device');
 
   return (
-    <div className="m3-filled-card">
-      <h3 className="text-sm font-medium uppercase tracking-wider text-m3-on-surface-variant pb-3 mb-4">{title}</h3>
+    <div className="card">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">{title}</h3>
       <ul className="space-y-4">
-        {data.map((item, index) => {
+        {data.slice(0, 5).map((item, index) => {
           const percentage = (item.value / maxValue) * 100;
           return (
-            <li key={item.name} className="space-y-2">
-              <div className="flex justify-between items-center text-sm">
+            <li key={item.name} className="group">
+              <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2 min-w-0">
                   {isTopDevices && (
-                    <span className="material-symbols-outlined text-lg text-m3-on-surface-variant flex-shrink-0">
-                      {getDeviceIcon(item.name)}
-                    </span>
+                    <span className="text-sm">{getDeviceIcon(item.name)}</span>
                   )}
-                  <span className="truncate pr-2 font-normal text-m3-on-surface">{item.name}</span>
+                  <span className="text-sm text-[var(--text-primary)] truncate">
+                    {item.name}
+                  </span>
                 </div>
-                <span className="font-medium tabular-nums text-m3-on-surface">{item.value}</span>
+                <span className="text-sm font-medium text-[var(--text-secondary)] tabular-nums">
+                  {item.value.toLocaleString()}
+                </span>
               </div>
-              <div className="h-2 bg-m3-surface-variant rounded-full overflow-hidden">
+              <div className="progress-bar">
                 <div
-                  className={`h-full rounded-full ${colors[index % colors.length]}`}
+                  className="progress-bar-fill bg-[var(--accent)]"
                   style={{ width: `${percentage}%` }}
                 />
               </div>

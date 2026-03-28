@@ -2,87 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
 @layer base {
   :root {
-    --m3-background: #fafafa;
-    --m3-surface: #ffffff;
-    --m3-surface-variant: #f0f0f0;
-    --m3-primary: #000000;
-    --m3-primary-container: #e5e5e5;
-    --m3-on-primary: #ffffff;
-    --m3-on-primary-container: #000000;
-    --m3-secondary: #525252;
-    --m3-secondary-container: #f0f0f0;
-    --m3-tertiary: #737373;
-    --m3-tertiary-container: #f0f0f0;
-    --m3-on-surface: #000000;
-    --m3-on-surface-variant: #525252;
-    --m3-outline: #d4d4d4;
-    --m3-shadow: rgba(0, 0, 0, 0.08);
+    --bg: #ffffff;
+    --surface: #f8f9fa;
+    --surface-elevated: #ffffff;
+    --border: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --accent: #111827;
+    --accent-subtle: #f3f4f6;
   }
 
   .dark {
-    --m3-background: #0a0a0a;
-    --m3-surface: #171717;
-    --m3-surface-variant: #262626;
-    --m3-primary: #ffffff;
-    --m3-primary-container: #404040;
-    --m3-on-primary: #000000;
-    --m3-on-primary-container: #ffffff;
-    --m3-secondary: #d4d4d4;
-    --m3-secondary-container: #262626;
-    --m3-tertiary: #a3a3a3;
-    --m3-tertiary-container: #262626;
-    --m3-on-surface: #ffffff;
-    --m3-on-surface-variant: #d4d4d4;
-    --m3-outline: #404040;
-    --m3-shadow: rgba(0, 0, 0, 0.4);
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface-elevated: #262626;
+    --border: #333333;
+    --text-primary: #fafafa;
+    --text-secondary: #a3a3a3;
+    --text-muted: #525252;
+    --accent: #fafafa;
+    --accent-subtle: #2a2a2a;
   }
 
   body {
-    background-color: var(--m3-background);
-    color: var(--m3-on-surface);
-    antialiased: true;
-    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
-  .m3-elevated-card {
-    background-color: var(--m3-surface);
-    border: 1px solid var(--m3-outline);
-    border-radius: 8px;
+  .card {
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     padding: 24px;
   }
 
-  .m3-filled-card {
-    background-color: var(--m3-surface);
-    border: 1px solid var(--m3-outline);
-    border-radius: 8px;
-    padding: 24px;
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .m3-title-large {
-    @apply text-3xl font-normal tracking-normal;
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
-  .m3-label-medium {
-    @apply text-xs font-medium uppercase tracking-wider;
+  .dark .card-hover:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  .m3-display-medium {
-    @apply text-4xl font-normal;
+  .progress-bar {
+    height: 6px;
+    background-color: var(--surface);
+    border-radius: 3px;
+    overflow: hidden;
   }
 
-  .m3-linear-progress {
-    @apply h-2 rounded-full overflow-hidden;
-    background-color: var(--m3-surface-variant);
-  }
-
-  .m3-linear-progress-bar {
-    @apply h-full rounded-full;
-    background-color: var(--m3-primary);
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
   }
 }

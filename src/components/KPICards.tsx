@@ -1,12 +1,5 @@
 'use client';
 
-interface Stat {
-  title: string;
-  metric: string | number;
-  color: string;
-  colorBg: string;
-}
-
 interface Props {
   stats: {
     pageviews: number;
@@ -16,25 +9,37 @@ interface Props {
   };
 }
 
+const formatNumber = (num: number): string => {
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toString();
+};
+
 export default function KPICards({ stats }: Props) {
-  const data: Stat[] = [
-    { title: "PAGEVIEWS", metric: stats.pageviews, color: "var(--m3-on-surface)", colorBg: "bg-m3-primary" },
-    { title: "UNIQUES", metric: stats.uniques, color: "var(--m3-on-surface)", colorBg: "bg-blue-600" },
-    { title: "BOUNCE RATE", metric: `${stats.bounceRate}%`, color: "var(--m3-on-surface)", colorBg: "bg-orange-500" },
-    { title: "AVG SESSION", metric: `${stats.avgSession}s`, color: "var(--m3-on-surface)", colorBg: "bg-green-600" },
+  const cards = [
+    { label: 'Pageviews', value: formatNumber(stats.pageviews), subtext: 'Total views' },
+    { label: 'Visitors', value: formatNumber(stats.uniques), subtext: 'Unique users' },
+    { label: 'Bounce', value: `${stats.bounceRate}%`, subtext: 'Bounce rate' },
+    { label: 'Avg. Session', value: `${stats.avgSession}s`, subtext: 'Duration' },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {data.map((item, index) => (
-        <div 
-          key={item.title} 
-          className="m3-elevated-card flex items-center gap-5"
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card) => (
+        <div
+          key={card.label}
+          className="card card-hover flex flex-col justify-between min-h-[120px]"
         >
-          <div className={`w-4 h-4 rounded-full ${item.colorBg}`} />
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-m3-on-surface-variant">{item.title}</p>
-            <p className="text-4xl font-normal mt-1" style={{ color: item.color }}>{item.metric}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+              {card.label}
+            </p>
+          </div>
+          <div className="mt-2">
+            <p className="text-3xl font-semibold text-[var(--text-primary)] tracking-tight">
+              {card.value}
+            </p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">{card.subtext}</p>
           </div>
         </div>
       ))}

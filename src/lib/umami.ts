@@ -96,10 +96,11 @@ export async function getPageviews(range: string) {
   
   const data = await httpGet<any>(url);
   
-  return data.pageviews.map((item: any) => ({
+  const pageviews = data.pageviews || [];
+  return pageviews.map((item: any) => ({
     date: item.x,
     pageviews: item.y,
-    uniques: item.y,
+    uniques: item.z,
   }));
 }
 

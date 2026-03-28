@@ -23,14 +23,12 @@ export default async function Dashboard({
   ]);
 
   return (
-    <main className="min-h-screen bg-m3-background text-m3-on-surface p-6 md:p-8 lg:p-10">
-      <div className="max-w-7xl mx-auto">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <h1 className="text-[length:var(--m3-title-large)] font-normal tracking-normal text-m3-on-surface">
-            Analytics
-          </h1>
-          <div className="flex items-center gap-4">
-            <Suspense fallback={<div className="h-10 w-64 rounded-lg bg-m3-surface-variant"></div>}>
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)]">
+      <div className="max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-10">
+        <header className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
+          <div className="flex items-center gap-3">
+            <Suspense fallback={<div className="h-9 w-40 rounded-lg bg-[var(--surface)]"></div>}>
               <DateFilter />
             </Suspense>
             <ThemeToggle />
@@ -45,15 +43,14 @@ export default async function Dashboard({
           <UmamiChart data={chartData} />
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <TopLists title="Top Pages" data={topQueries} />
           <TopLists title="Top Referrers" data={topReferrers} />
           <TopLists title="Top Devices" data={topDevices} />
         </section>
 
-        <footer className="mt-12 flex items-center gap-2 text-m3-on-surface-variant">
-          <span className="material-symbols-outlined text-lg">power</span>
-          <span className="text-sm">Umami Analytics</span>
+        <footer className="mt-12 pt-6 border-t border-[var(--border)]">
+          <p className="text-sm text-[var(--text-muted)]">Powered by Umami Analytics</p>
         </footer>
       </div>
     </main>
