@@ -61,6 +61,7 @@ function getRangeParams(range: string) {
   if (range === '1d') startAt.setHours(0, 0, 0, 0);
   else if (range === '7d') startAt.setDate(now.getDate() - 7);
   else if (range === '30d') startAt.setDate(now.getDate() - 30);
+  else if (range === 'all') startAt = new Date(0);
   
   return {
     startAt: startAt.getTime(),

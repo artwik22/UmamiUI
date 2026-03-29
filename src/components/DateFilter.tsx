@@ -10,6 +10,7 @@ export default function DateFilter() {
     { label: "Today", value: "1d" },
     { label: "7 days", value: "7d" },
     { label: "30 days", value: "30d" },
+    { label: "All Time", value: "all" },
   ];
 
   const handleValueChange = (value: string) => {
