@@ -1,17 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useSettings } from '../context/SettingsContext';
-import {
-  LineChart,
-  Line,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface Props {
   data: any[];
@@ -26,45 +19,72 @@ function formatDate(dateStr: string | number, range: string, timeFormat: '12h' |
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function CustomTooltip({ active, payload, label, range, timeFormat, selectedMetric }: any) {
-  if (active && payload && payload.length) {
-    const filteredPayload = payload.filter((p: any) => p.dataKey === selectedMetric);
-    if (filteredPayload.length === 0) return null;
-    return (
-      <div className="bg-[var(--surface)] border border-[var(--border)] p-2 md:p-3 rounded-lg shadow-lg">
-        <p className="text-[var(--text-secondary)] text-xs md:text-sm mb-2">{formatDate(label, range, timeFormat)}</p>
-        {filteredPayload.map((entry: any, index: number) => (
-          <p key={index} className="text-xs md:text-sm" style={{ color: entry.color }}>
-            {entry.name}: {entry.value.toLocaleString()}
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-}
-
-export default function UmamiChart({ data, range }: Props) {
-  console.log('UmamiChart data:', data);
+export default function UmamiChartApex({ data, range }: Props) {
   const [selectedMetric, setSelectedMetric] = useState<'pageviews' | 'uniques'>('pageviews');
   const { timeFormat } = useSettings();
-  
-  const metricConfig = {
-    pageviews: {
-      key: 'pageviews',
-      color: 'var(--chart-1)',
-      gradient: 'gradientPageviews',
-      name: 'Pageviews'
-    },
-    uniques: {
-      key: 'uniques',
-      color: 'var(--chart-2)',
-      gradient: 'gradientUniques',
-      name: 'Unique Visitors'
-    }
-  };
 
-  const config = metricConfig[selectedMetric];
+  const chartData = useMemo(() => {
+    return {
+      categories: data.map((d) => formatDate(d.date, range, timeFormat)),
+      series: [
+        {
+          name: selectedMetric === 'pageviews' ? 'Pageviews' : 'Unique Visitors',
+          data: data.map((d) => (selectedMetric === 'pageviews' ? d.pageviews : d.uniques)),
+        },
+      ],
+    };
+  }, [data, range, selectedMetric, timeFormat]);
+
+  const options: any = {
+    chart: {
+      type: 'area',
+      height: '100%',
+      toolbar: { show: false },
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 800,
+        animateGradually: { enabled: true, delay: 150 },
+        dynamicAnimation: { enabled: true, speed: 350 }
+      },
+    },
+    colors: [selectedMetric === 'pageviews' ? 'var(--chart-1)' : 'var(--chart-2)'],
+    dataLabels: { enabled: false },
+    stroke: { curve: 'smooth', width: 3 },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.3,
+        stops: [0, 90, 100]
+      }
+    },
+    xaxis: {
+      categories: chartData.categories,
+      labels: {
+        style: { colors: 'var(--text-muted)', fontSize: '11px' }
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    },
+    yaxis: {
+      labels: {
+        style: { colors: 'var(--text-muted)', fontSize: '11px' },
+        formatter: (val: number) => val.toLocaleString()
+      },
+    },
+    grid: {
+      borderColor: 'var(--border)',
+      strokeDashArray: 4,
+      xaxis: { lines: { show: false } }
+    },
+    tooltip: {
+      theme: 'dark',
+      x: { show: true },
+      y: { formatter: (val: number) => val.toLocaleString() }
+    },
+  };
 
   return (
     <div className="card p-1 md:p-2 h-[400px] md:h-[500px] flex flex-col">
@@ -72,7 +92,7 @@ export default function UmamiChart({ data, range }: Props) {
         <div>
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">Traffic Overview</h3>
           <p className="text-sm text-[var(--text-secondary)]">
-            {config.name}
+            {selectedMetric === 'pageviews' ? 'Pageviews' : 'Unique Visitors'}
           </p>
         </div>
         <div className="flex items-center bg-[var(--surface-elevated)] rounded-lg p-1">
@@ -99,87 +119,7 @@ export default function UmamiChart({ data, range }: Props) {
         </div>
       </div>
       <div className="flex-1 min-h-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 0, right: 5, left: 5, bottom: 0 }}>
-            <defs>
-              <linearGradient id="gradientPageviews" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/>
-              </linearGradient>
-              <linearGradient id="gradientUniques" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-            <XAxis 
-              dataKey="date" 
-              stroke="var(--text-muted)"
-              tickFormatter={(val) => formatDate(val, range, timeFormat)}
-              tick={{ fontSize: 11 }}
-              axisLine={false}
-              tickLine={false}
-              dy={10}
-            />
-            <YAxis 
-              stroke="var(--text-muted)"
-              tickFormatter={(n) => n.toLocaleString()}
-              tick={{ fontSize: 11 }}
-              axisLine={false}
-              tickLine={false}
-              dx={-10}
-              domain={[0, 'auto']}
-            />
-            <Tooltip content={<CustomTooltip range={range} timeFormat={timeFormat} selectedMetric={selectedMetric} />} />
-            
-            <Area
-              type="monotone"
-              dataKey="pageviews"
-              fill="url(#gradientPageviews)"
-              stroke="none"
-              strokeWidth={0}
-              isAnimationActive={true}
-              animationDuration={300}
-              animationEasing="ease-in-out"
-              fillOpacity={selectedMetric === 'pageviews' ? 1 : 0}
-            />
-            <Line
-              type="monotone"
-              dataKey="pageviews"
-              stroke={selectedMetric === 'pageviews' ? 'var(--chart-1)' : 'transparent'}
-              strokeWidth={3}
-              dot={selectedMetric === 'pageviews' ? { fill: 'var(--chart-1)', strokeWidth: 0, r: 4 } : false}
-              activeDot={selectedMetric === 'pageviews' ? { r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 } : false}
-              name="Pageviews"
-              isAnimationActive={true}
-              animationDuration={300}
-              animationEasing="ease-in-out"
-            />
-            <Area
-              type="monotone"
-              dataKey="uniques"
-              fill="url(#gradientUniques)"
-              stroke="none"
-              strokeWidth={0}
-              isAnimationActive={true}
-              animationDuration={300}
-              animationEasing="ease-in-out"
-              fillOpacity={selectedMetric === 'uniques' ? 1 : 0}
-            />
-            <Line
-              type="monotone"
-              dataKey="uniques"
-              stroke={selectedMetric === 'uniques' ? 'var(--chart-2)' : 'transparent'}
-              strokeWidth={3}
-              dot={selectedMetric === 'uniques' ? { fill: 'var(--chart-2)', strokeWidth: 0, r: 4 } : false}
-              activeDot={selectedMetric === 'uniques' ? { r: 6, stroke: "var(--surface-elevated)", strokeWidth: 2 } : false}
-              name="Unique Visitors"
-              isAnimationActive={true}
-              animationDuration={300}
-              animationEasing="ease-in-out"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <Chart options={options} series={chartData.series} type="area" height="100%" width="100%" />
       </div>
     </div>
   );
