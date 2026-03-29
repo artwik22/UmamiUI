@@ -96,22 +96,6 @@ export default function DashboardContent({
           <TopLists title="Top Referrers" data={topReferrers} />
           <TopLists title="Top Devices" data={topDevices} />
         </section>
-        
-        {/* ... rest of the file ... */}
-
-        <section className="mb-4 md:mb-8">
-          <UmamiChart data={chartData} range={range} />
-        </section>
-
-        <section className="mb-4 md:mb-8">
-          <KPICards stats={stats} />
-        </section>
-
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          <TopLists title="Top Pages" data={topQueries} />
-          <TopLists title="Top Referrers" data={topReferrers} />
-          <TopLists title="Top Devices" data={topDevices} />
-        </section>
 
         <footer className="mt-8 md:mt-16 pt-8 border-t border-[var(--border)]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
