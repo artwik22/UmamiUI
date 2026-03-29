@@ -71,7 +71,7 @@ export default function UmamiChartApex({ data, range }: Props) {
     yaxis: {
       labels: {
         style: { colors: 'var(--text-muted)', fontSize: '11px' },
-        formatter: (val: number) => val.toLocaleString()
+        formatter: (val: number) => val.toLocaleString('fr-FR').replace(/\s/g, ' ')
       },
     },
     grid: {
@@ -82,7 +82,7 @@ export default function UmamiChartApex({ data, range }: Props) {
     tooltip: {
       theme: 'dark',
       x: { show: true },
-      y: { formatter: (val: number) => val.toLocaleString() }
+      y: { formatter: (val: number) => val.toLocaleString('fr-FR').replace(/\s/g, ' ') }
     },
   };
 
