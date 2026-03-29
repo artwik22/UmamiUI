@@ -127,7 +127,7 @@ export async function getWebsites() {
   }));
 }
 
-export async function getMetrics(range: string, type: string, websiteId?: string) {
+export async function getMetrics(range: string, type: string, websiteId?: string): Promise<{ name: string; value: number }[]> {
   const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
   
   if (!UMAMI_API_CLIENT_ENDPOINT || !targetWebsiteId) {
@@ -147,7 +147,7 @@ export async function getMetrics(range: string, type: string, websiteId?: string
 
   return Object.entries(aggregated).map(([name, value]) => ({
     name,
-    value,
+    value: value as number,
   }));
 }
 
