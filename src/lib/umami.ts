@@ -138,10 +138,26 @@ export async function getMetrics(range: string, type: string, websiteId?: string
   const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/metrics?startAt=${params.startAt}&endAt=${params.endAt}&type=${type}`;
   
   const data = await httpGet<any[]>(url);
-  
-  return data.map((item: any) => ({
-    name: item.x,
-    value: item.y,
+
+  const aggregated = data.reduce((acc: Record<string, number>, item: any) => {
+    const name = type === 'query' ? formatQueryName(item.x) : item.x;
+    acc[name] = (acc[name] || 0) + item.y;
+    return acc;
+  }, {});
+
+  return Object.entries(aggregated).map(([name, value]) => ({
+    name,
+    value,
   }));
+}
+
+
+function formatQueryName(name: string): string {
+  // Extract path from "body=include/path&..."
+  const match = name.match(/body=include\/([^&]+)/);
+  if (match) {
+    return `/${match[1]}`;
+  }
+  return name;
 }
 

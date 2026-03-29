@@ -97,7 +97,7 @@ export default function DashboardContent({
           <TopLists title="Top Devices" data={topDevices} />
         </section>
 
-        <footer className="mt-8 md:mt-16 pt-8 border-t border-[var(--border)]">
+        <footer className="mt-8 md:mb-8 pt-8 border-t border-[var(--border)]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-[var(--text-muted)]">Powered by Umami Analytics</p>
             <p className="text-xs text-[var(--text-muted)]">Dashboard UI v2.0</p>
