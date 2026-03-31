@@ -61,7 +61,7 @@ function getRangeParams(range: string) {
   if (range === '1d') startAt.setHours(0, 0, 0, 0);
   else if (range === '7d') startAt.setDate(now.getDate() - 7);
   else if (range === '30d') startAt.setDate(now.getDate() - 30);
-  else if (range === 'all') startAt = new Date(2020, 0, 1); // Start from 2020 to be safe
+  else if (range === 'all') startAt = new Date(2020, 0, 1);
   
   return {
     startAt: startAt.getTime(),
@@ -97,11 +97,14 @@ export async function getPageviews(range: string, websiteId?: string) {
   }
 
   const params = getRangeParams(range);
-  const unit = range === '1d' ? 'hour' : (range === 'all' ? 'month' : 'day');
-  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/pageviews?startAt=${params.startAt}&endAt=${params.endAt}&unit=${unit}&timezone=UTC`;
+  const unit = range === '1d' ? 'hour' : (range === 'all' ? 'year' : 'day');
+  const unitParam = `&unit=${unit}`;
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/pageviews?startAt=${params.startAt}&endAt=${params.endAt}${unitParam}&timezone=UTC`;
   
   const data = await httpGet<any>(url);
-  
+
+  console.log('API Response for range', range, ':', JSON.stringify(data, null, 2));
+
   const pageviews = data.pageviews || [];
   return pageviews.map((item: any) => ({
     date: item.x,

@@ -16,6 +16,9 @@ function formatDate(dateStr: string | number, range: string, timeFormat: '12h' |
   if (range === '1d') {
     return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: timeFormat === '12h' });
   }
+  if (range === 'all') {
+    return date.toLocaleDateString('en-US', { year: 'numeric' });
+  }
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
