@@ -10,6 +10,7 @@ import ThemeToggle from "./ThemeToggle";
 import LogoutButton from "./LogoutButton";
 import SettingsModal from "./SettingsModal";
 import SidePanel from "./SidePanel";
+import Sidebar from "./Sidebar";
 import { Bars3Icon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 interface DashboardContentProps {
@@ -38,24 +39,17 @@ export default function DashboardContent({
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   return (
-    <main className="min-h-screen text-[var(--text-primary)]">
-      <div className="max-w-7xl mx-auto px-4 py-6 md:px-6 md:py-8">
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6 md:mb-10 w-full">
-          <Suspense fallback={<div className="h-11 md:h-10 w-full sm:w-44 rounded-xl bg-[var(--surface)]"></div>}>
-            <WebsiteFilter />
-          </Suspense>
-          <Suspense fallback={<div className="h-11 md:h-10 w-full sm:w-40 rounded-xl bg-[var(--surface)]"></div>}>
+    <div className="flex">
+      <Sidebar onSettingsClick={() => setIsSettingsOpen(true)} />
+      <main className="flex-1 ml-[280px] min-h-screen text-[var(--text-primary)] transition-all">
+        <div className="max-w-full mx-auto px-2 py-3 md:px-3 md:py-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 w-full">
+          <Suspense fallback={
+            <div className="h-11 md:h-10 w-full sm:w-40 rounded-xl bg-[var(--surface)] animate-pulse"></div>
+          }>
             <DateFilter />
           </Suspense>
-          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
-            <button
-              onClick={() => setIsPanelOpen(true)}
-              className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              <Bars3Icon className="w-6 h-6" />
-            </button>
           </div>
-        </div>
 
         <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
         <SidePanel 
@@ -83,27 +77,28 @@ export default function DashboardContent({
           </div>
         </SidePanel>
         
-        <section className="mb-4 md:mb-8">
-          <UmamiChart data={chartData} range={range} />
-        </section>
-
-        <section className="mb-4 md:mb-8">
+        <section className="mb-3">
           <KPICards stats={stats} />
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <section className="mb-3">
+          <UmamiChart data={chartData} range={range} />
+        </section>
+
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <TopLists title="Top Pages" data={topQueries} />
           <TopLists title="Top Referrers" data={topReferrers} />
           <TopLists title="Top Devices" data={topDevices} />
         </section>
 
-        <footer className="mt-8 md:mb-8 pt-8 border-t border-[var(--border)]">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <footer className="mt-4 pt-4 border-t border-[var(--border)]">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-2">
             <p className="text-sm text-[var(--text-muted)]">Powered by Umami Analytics</p>
             <p className="text-xs text-[var(--text-muted)]">Dashboard UI v2.0</p>
           </div>
         </footer>
       </div>
     </main>
+    </div>
   );
 }

@@ -1,22 +1,31 @@
 'use client';
 
+import { motion } from 'framer-motion';
+import { 
+  GlobeAltIcon, 
+  DevicePhoneMobileIcon, 
+  CpuChipIcon, 
+  ComputerDesktopIcon,
+  ServerIcon 
+} from '@heroicons/react/24/outline';
+
 interface Props {
   title: string;
   data: { name: string; value: number }[];
 }
 
-const getDeviceIcon = (name: string): string => {
+const getDeviceIcon = (name: string) => {
   const lower = name.toLowerCase();
-  if (lower.includes('chrome')) return '🔵';
-  if (lower.includes('firefox')) return '🦊';
-  if (lower.includes('safari')) return '🧭';
-  if (lower.includes('edge')) return '🔷';
-  if (lower.includes('ios') || lower.includes('iphone') || lower.includes('ipad')) return '📱';
-  if (lower.includes('android')) return '🤖';
-  if (lower.includes('mac') || lower.includes('macos')) return '🍎';
-  if (lower.includes('windows')) return '🪟';
-  if (lower.includes('linux')) return '🐧';
-  return '💻';
+  if (lower.includes('chrome')) return <GlobeAltIcon className="w-4 h-4 text-orange-500" />;
+  if (lower.includes('firefox')) return <GlobeAltIcon className="w-4 h-4 text-orange-600" />;
+  if (lower.includes('safari')) return <GlobeAltIcon className="w-4 h-4 text-blue-500" />;
+  if (lower.includes('edge')) return <GlobeAltIcon className="w-4 h-4 text-blue-600" />;
+  if (lower.includes('ios') || lower.includes('iphone') || lower.includes('ipad')) return <DevicePhoneMobileIcon className="w-4 h-4 text-gray-500" />;
+  if (lower.includes('android')) return <CpuChipIcon className="w-4 h-4 text-green-500" />;
+  if (lower.includes('mac') || lower.includes('macos')) return <ComputerDesktopIcon className="w-4 h-4 text-gray-400" />;
+  if (lower.includes('windows')) return <ComputerDesktopIcon className="w-4 h-4 text-blue-400" />;
+  if (lower.includes('linux')) return <ServerIcon className="w-4 h-4 text-yellow-500" />;
+  return <GlobeAltIcon className="w-4 h-4 text-gray-400" />;
 };
 
 const colors = [
@@ -44,7 +53,13 @@ export default function TopLists({ title, data }: Props) {
           const percentage = (item.value / maxValue) * 100;
           const color = colors[index % colors.length];
           return (
-            <li key={item.name} className="group">
+            <motion.li
+              key={item.name}
+              className="group"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="w-6 h-6 flex items-center justify-center text-xs font-medium text-[var(--text-muted)] bg-[var(--surface)] rounded-md">
@@ -65,11 +80,12 @@ export default function TopLists({ title, data }: Props) {
                 <div
                   className="progress-bar-fill"
                   style={{ 
-                    width: `${percentage}%`
+                    width: `${percentage}%`,
+                    background: `linear-gradient(90deg, ${color}, var(--chart-3))`
                   }}
                 />
               </div>
-            </li>
+            </motion.li>
           );
         })}
       </ul>

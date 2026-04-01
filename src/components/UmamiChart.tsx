@@ -90,7 +90,7 @@ export default function UmamiChartApex({ data, range }: Props) {
   };
 
   return (
-    <div className="card p-1 md:p-2 h-[400px] md:h-[500px] flex flex-col">
+    <div className="card p-1 md:p-2 h-[300px] md:h-[400px] flex flex-col">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-1 md:mb-2 gap-1">
         <div>
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">Traffic Overview</h3>
