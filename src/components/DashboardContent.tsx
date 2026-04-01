@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import KPICards from "./KPICards";
 import UmamiChart from "./UmamiChart";
 import TopLists from "./TopLists";
@@ -25,6 +26,7 @@ interface DashboardContentProps {
   topReferrers: { name: string; value: number }[];
   topDevices: { name: string; value: number }[];
   range: string;
+  allWebsites?: boolean;
 }
 
 export default function DashboardContent({
@@ -34,6 +36,7 @@ export default function DashboardContent({
   topReferrers,
   topDevices,
   range,
+  allWebsites = false,
 }: DashboardContentProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -43,6 +46,13 @@ export default function DashboardContent({
       <Sidebar onSettingsClick={() => setIsSettingsOpen(true)} />
       <main className="flex-1 ml-[280px] min-h-screen text-[var(--text-primary)] transition-all">
         <div className="max-w-full mx-auto px-2 py-3 md:px-3 md:py-4">
+          {allWebsites && (
+            <div className="mb-4 px-3 py-2 bg-[var(--accent)]/10 border border-[var(--accent)]/30 rounded-lg">
+              <p className="text-sm text-[var(--accent)] font-medium">
+                Aggregated data from all websites
+              </p>
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5 w-full">
           <Suspense fallback={
             <div className="h-11 md:h-10 w-full sm:w-40 rounded-xl bg-[var(--surface)] animate-pulse"></div>

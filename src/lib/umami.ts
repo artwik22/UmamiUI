@@ -165,3 +165,84 @@ function formatQueryName(name: string): string {
   return name;
 }
 
+export async function getAllWebsitesStats(range: string) {
+  const websites = await getWebsites();
+  
+  const results = await Promise.all(
+    websites.map(async (site) => {
+      try {
+        const stats = await getStats(range, site.id);
+        return { ...site, stats };
+      } catch (error) {
+        console.error(`Failed to get stats for ${site.name}:`, error);
+        return { ...site, stats: null };
+      }
+    })
+  );
+
+  const validResults = results.filter(r => r.stats !== null);
+  
+  const aggregated = validResults.reduce(
+    (acc, site) => ({
+      pageviews: acc.pageviews + (site.stats?.pageviews || 0),
+      uniques: acc.uniques + (site.stats?.uniques || 0),
+      bounces: (acc.bounces || 0) + (site.stats?.bounceRate ? Math.round((site.stats?.pageviews || 0) * site.stats.bounceRate / 100) : 0),
+      totalTime: (acc.totalTime || 0) + ((site.stats?.avgSession || 0) * (site.stats?.pageviews || 0)),
+      totalVisits: (acc.totalVisits || 0) + (site.stats?.pageviews || 0),
+    }),
+    { pageviews: 0, uniques: 0, bounces: 0, totalTime: 0, totalVisits: 0 }
+  );
+
+  const bounceRate = aggregated.totalVisits > 0 
+    ? Math.round((aggregated.bounces / aggregated.totalVisits) * 100) 
+    : 0;
+  const avgSession = aggregated.totalVisits > 0 
+    ? Math.round(aggregated.totalTime / aggregated.totalVisits) 
+    : 0;
+
+  return {
+    aggregated: {
+      pageviews: aggregated.pageviews,
+      uniques: aggregated.uniques,
+      bounceRate,
+      avgSession,
+    },
+    websites: validResults,
+  };
+}
+
+export async function getAllWebsitesPageviews(range: string) {
+  const websites = await getWebsites();
+  
+  const results = await Promise.all(
+    websites.map(async (site) => {
+      try {
+        const pageviews = await getPageviews(range, site.id);
+        return { id: site.id, name: site.name, pageviews };
+      } catch (error) {
+        console.error(`Failed to get pageviews for ${site.name}:`, error);
+        return { id: site.id, name: site.name, pageviews: [] };
+      }
+    })
+  );
+
+  if (results.length === 0) return [];
+
+  const aggregatedByDate: Record<string, { pageviews: number; uniques: number }> = {};
+
+  for (const site of results) {
+    for (const pv of site.pageviews) {
+      const date = pv.date;
+      if (!aggregatedByDate[date]) {
+        aggregatedByDate[date] = { pageviews: 0, uniques: 0 };
+      }
+      aggregatedByDate[date].pageviews += pv.pageviews;
+      aggregatedByDate[date].uniques += pv.uniques;
+    }
+  }
+
+  return Object.entries(aggregatedByDate)
+    .map(([date, data]) => ({ date, ...data }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
