@@ -9,6 +9,12 @@ interface Props {
     uniques: number;
     bounceRate: number;
     avgSession: number;
+    trends?: {
+      pageviews: number | null;
+      uniques: number | null;
+      bounceRate: number | null;
+      avgSession: number | null;
+    };
   };
 }
 
@@ -55,6 +61,7 @@ export default function KPICards({ stats }: Props) {
     uniques: stats.uniques ?? 0,
     bounceRate: stats.bounceRate ?? 0,
     avgSession: stats.avgSession ?? 0,
+    trends: stats.trends ?? { pageviews: null, uniques: null, bounceRate: null, avgSession: null },
   };
 
   const cards = [
@@ -63,32 +70,32 @@ export default function KPICards({ stats }: Props) {
       label: 'Pageviews', 
       value: formatNumber(safeStats.pageviews), 
       subtext: 'Total views',
-      trend: '+12%',
-      trendUp: true 
+      trend: safeStats.trends?.pageviews !== null ? `${safeStats.trends.pageviews > 0 ? '+' : ''}${safeStats.trends.pageviews}%` : null,
+      trendUp: (safeStats.trends?.pageviews ?? 0) >= 0 
     },
     { 
       key: 'visitors',
       label: 'Visitors', 
       value: formatNumber(safeStats.uniques), 
       subtext: 'Unique users',
-      trend: '+8%',
-      trendUp: true
+      trend: safeStats.trends?.uniques !== null ? `${safeStats.trends.uniques > 0 ? '+' : ''}${safeStats.trends.uniques}%` : null,
+      trendUp: (safeStats.trends?.uniques ?? 0) >= 0
     },
     { 
       key: 'bounce',
       label: 'Bounce', 
       value: `${safeStats.bounceRate}%`, 
       subtext: 'Bounce rate',
-      trend: '-3%',
-      trendUp: false
+      trend: safeStats.trends?.bounceRate !== null ? `${safeStats.trends.bounceRate > 0 ? '+' : ''}${safeStats.trends.bounceRate}%` : null,
+      trendUp: (safeStats.trends?.bounceRate ?? 0) <= 0
     },
     { 
       key: 'session',
       label: 'Avg. Session', 
       value: `${safeStats.avgSession}s`, 
       subtext: 'Duration',
-      trend: '+5%',
-      trendUp: true
+      trend: safeStats.trends?.avgSession !== null ? `${safeStats.trends.avgSession > 0 ? '+' : ''}${safeStats.trends.avgSession}%` : null,
+      trendUp: (safeStats.trends?.avgSession ?? 0) >= 0
     },
   ];
 

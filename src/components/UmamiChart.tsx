@@ -42,13 +42,34 @@ export default function UmamiChartApex({ data, range }: Props) {
     chart: {
       type: 'area',
       height: '100%',
-      toolbar: { show: false },
+      toolbar: { 
+        show: true,
+        tools: {
+          download: false,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
+        autoSelected: 'zoom'
+      },
       animations: {
         enabled: true,
         easing: 'easeinout',
         speed: 800,
         animateGradually: { enabled: true, delay: 150 },
         dynamicAnimation: { enabled: true, speed: 350 }
+      },
+      zoom: {
+        enabled: true,
+        type: 'x',
+        autoScaleYaxis: true,
+      },
+      pan: {
+        enabled: true,
+        mode: 'x',
       },
     },
     colors: [selectedMetric === 'pageviews' ? 'var(--chart-1)' : 'var(--chart-2)'],

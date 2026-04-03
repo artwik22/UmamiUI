@@ -1,10 +1,12 @@
 'use client';
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 
 export default function DateFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentRange = searchParams.get("range") || "7d";
+  const [isPending, startTransition] = useTransition();
 
   const ranges = [
     { label: "Today", value: "1d" },
@@ -16,7 +18,9 @@ export default function DateFilter() {
   const handleValueChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("range", value);
-    router.push(`/?${params.toString()}`);
+    startTransition(() => {
+      router.push(`/?${params.toString()}`);
+    });
   };
 
   return (
@@ -25,12 +29,14 @@ export default function DateFilter() {
         <button
           key={range.value}
           onClick={() => handleValueChange(range.value)}
+          disabled={isPending}
           className={`
             px-3 py-2 md:px-4 md:py-2 text-sm font-semibold rounded-lg transition-all duration-200 min-w-[44px] min-h-[44px] md:min-h-0
             ${currentRange === range.value
               ? "bg-[var(--accent)] text-[var(--bg)] shadow-sm"
               : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)]"
             }
+            ${isPending ? "opacity-50" : ""}
           `}
         >
           {range.label}

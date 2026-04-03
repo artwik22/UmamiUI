@@ -69,6 +69,30 @@ function getRangeParams(range: string) {
   };
 }
 
+function getPreviousRangeParams(range: string) {
+  const now = new Date();
+  let prevStartAt = new Date();
+  let prevEndAt = new Date();
+  
+  if (range === '1d') {
+    prevEndAt.setHours(now.getHours() - 24);
+    prevStartAt.setHours(0, 0, 0, 0);
+  } else if (range === '7d') {
+    prevStartAt.setDate(now.getDate() - 14);
+    prevEndAt.setDate(now.getDate() - 7);
+  } else if (range === '30d') {
+    prevStartAt.setDate(now.getDate() - 60);
+    prevEndAt.setDate(now.getDate() - 30);
+  } else if (range === 'all') {
+    return null;
+  }
+  
+  return {
+    startAt: prevStartAt.getTime(),
+    endAt: prevEndAt.getTime(),
+  };
+}
+
 export async function getStats(range: string, websiteId?: string) {
   const targetWebsiteId = websiteId || UMAMI_WEBSITE_ID;
   
@@ -81,11 +105,46 @@ export async function getStats(range: string, websiteId?: string) {
   
   const data = await httpGet<any>(url);
   
+  const prevParams = getPreviousRangeParams(range);
+  let prevData = null;
+  
+  if (prevParams) {
+    const prevUrl = `${UMAMI_API_CLIENT_ENDPOINT}websites/${targetWebsiteId}/stats?startAt=${prevParams.startAt}&endAt=${prevParams.endAt}`;
+    try {
+      prevData = await httpGet<any>(prevUrl);
+    } catch (e) {
+      console.warn('Failed to fetch previous period stats');
+    }
+  }
+
+  const calcTrend = (current: number, previous: number) => {
+    if (!previous || previous === 0) return null;
+    return Math.round(((current - previous) / previous) * 100);
+  };
+
+  const currentPageviews = data.pageviews?.value ?? data.pageviews ?? 0;
+  const currentUniques = data.visitors?.value ?? data.visitors ?? 0;
+  const currentBounces = data.bounces ?? 0;
+  const currentVisits = data.visits ?? 0;
+  const currentTotalTime = data.totaltime ?? 0;
+
   return {
-    pageviews: data.pageviews?.value ?? data.pageviews ?? 0,
-    uniques: data.visitors?.value ?? data.visitors ?? 0,
-    bounceRate: data.bounces ? Math.round((data.bounces / data.visits) * 100) : 0,
-    avgSession: data.totaltime && data.visits ? Math.round(data.totaltime / data.visits) : 0,
+    pageviews: currentPageviews,
+    uniques: currentUniques,
+    bounceRate: currentVisits > 0 ? Math.round((currentBounces / currentVisits) * 100) : 0,
+    avgSession: currentVisits > 0 ? Math.round(currentTotalTime / currentVisits) : 0,
+    trends: {
+      pageviews: prevData ? calcTrend(currentPageviews, prevData.pageviews?.value ?? prevData.pageviews ?? 0) : null,
+      uniques: prevData ? calcTrend(currentUniques, prevData.visitors?.value ?? prevData.visitors ?? 0) : null,
+      bounceRate: prevData && prevData.visits ? calcTrend(
+        currentVisits > 0 ? Math.round((currentBounces / currentVisits) * 100) : 0,
+        Math.round((prevData.bounces ?? 0) / (prevData.visits ?? 1) * 100)
+      ) : null,
+      avgSession: prevData && prevData.visits ? calcTrend(
+        currentVisits > 0 ? Math.round(currentTotalTime / currentVisits) : 0,
+        Math.round((prevData.totaltime ?? 0) / (prevData.visits ?? 1))
+      ) : null,
+    },
   };
 }
 
@@ -200,14 +259,77 @@ export async function getAllWebsitesStats(range: string) {
     ? Math.round(aggregated.totalTime / aggregated.totalVisits) 
     : 0;
 
+  const calcTrend = (current: number, previous: number) => {
+    if (!previous || previous === 0) return null;
+    return Math.round(((current - previous) / previous) * 100);
+  };
+
+  const trends = {
+    pageviews: null,
+    uniques: null,
+    bounceRate: null,
+    avgSession: null,
+  };
+
+  const prevParams = getPreviousRangeParams(range);
+  if (prevParams && validResults.length > 0) {
+    try {
+      const prevResults = await Promise.all(
+        websites.map(async (site) => {
+          try {
+            const prevStats = await getStatsForRange(site.id, prevParams.startAt, prevParams.endAt);
+            return { ...site, stats: prevStats };
+          } catch {
+            return { ...site, stats: null };
+          }
+        })
+      );
+      const prevValid = prevResults.filter(r => r.stats !== null);
+      const prevAggregated = prevValid.reduce(
+        (acc, site) => ({
+          pageviews: acc.pageviews + (site.stats?.pageviews || 0),
+          uniques: acc.uniques + (site.stats?.uniques || 0),
+          bounces: (acc.bounces || 0) + (site.stats?.bounceRate ? Math.round((site.stats?.pageviews || 0) * site.stats.bounceRate / 100) : 0),
+          totalTime: (acc.totalTime || 0) + ((site.stats?.avgSession || 0) * (site.stats?.pageviews || 0)),
+          totalVisits: (acc.totalVisits || 0) + (site.stats?.pageviews || 0),
+        }),
+        { pageviews: 0, uniques: 0, bounces: 0, totalTime: 0, totalVisits: 0 }
+      );
+      const prevBounceRate = prevAggregated.totalVisits > 0 ? Math.round((prevAggregated.bounces / prevAggregated.totalVisits) * 100) : 0;
+      const prevAvgSession = prevAggregated.totalVisits > 0 ? Math.round(prevAggregated.totalTime / prevAggregated.totalVisits) : 0;
+
+      trends.pageviews = calcTrend(aggregated.pageviews, prevAggregated.pageviews);
+      trends.uniques = calcTrend(aggregated.uniques, prevAggregated.uniques);
+      trends.bounceRate = calcTrend(bounceRate, prevBounceRate);
+      trends.avgSession = calcTrend(avgSession, prevAvgSession);
+    } catch (e) {
+      console.warn('Failed to calculate trends for all websites');
+    }
+  }
+
   return {
     aggregated: {
       pageviews: aggregated.pageviews,
       uniques: aggregated.uniques,
       bounceRate,
       avgSession,
+      trends,
     },
     websites: validResults,
+  };
+}
+
+async function getStatsForRange(websiteId: string, startAt: number, endAt: number) {
+  if (!UMAMI_API_CLIENT_ENDPOINT || !websiteId) {
+    throw new Error('Missing required Umami API environment variables');
+  }
+  const url = `${UMAMI_API_CLIENT_ENDPOINT}websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}`;
+  const data = await httpGet<any>(url);
+  return {
+    pageviews: data.pageviews?.value ?? data.pageviews ?? 0,
+    uniques: data.visitors?.value ?? data.visitors ?? 0,
+    bounceRate: data.visits > 0 ? Math.round(((data.bounces ?? 0) / data.visits) * 100) : 0,
+    avgSession: data.visits > 0 ? Math.round((data.totaltime ?? 0) / data.visits) : 0,
   };
 }
 

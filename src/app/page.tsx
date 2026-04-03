@@ -10,7 +10,7 @@ export default async function Dashboard({
   const params = await searchParams;
   const range = (params.range as string) || "7d";
   const websiteId = (params.website as string) || undefined;
-  const all = params.all === "true";
+  const all = params.all === "true" || !process.env.UMAMI_WEBSITE_ID;
 
   let stats, chartData, topQueries, topReferrers, topDevices;
 
@@ -19,7 +19,10 @@ export default async function Dashboard({
       getAllWebsitesStats(range),
       getAllWebsitesPageviews(range),
     ]);
-    stats = allStats.aggregated;
+    stats = {
+      ...allStats.aggregated,
+      trends: allStats.aggregated.trends,
+    };
     chartData = allChartData;
     topQueries = [];
     topReferrers = [];
