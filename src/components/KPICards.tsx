@@ -122,7 +122,7 @@ export default function KPICards({ stats }: Props) {
             </div>
           </div>
           <div className="mt-2">
-            <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text-primary)] tracking-tight">
+            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--text-primary)] tracking-tight">
               {card.value}
             </p>
             <div className="flex items-center justify-between mt-3">

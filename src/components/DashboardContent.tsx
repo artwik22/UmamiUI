@@ -1,18 +1,12 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import Link from "next/link";
 import KPICards from "./KPICards";
 import UmamiChart from "./UmamiChart";
 import TopLists from "./TopLists";
 import DateFilter from "./DateFilter";
-import WebsiteFilter from "./WebsiteFilter";
-import ThemeToggle from "./ThemeToggle";
-import LogoutButton from "./LogoutButton";
 import SettingsModal from "./SettingsModal";
-import SidePanel from "./SidePanel";
 import Sidebar from "./Sidebar";
-import { Bars3Icon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 interface DashboardContentProps {
   stats: {
@@ -39,12 +33,11 @@ export default function DashboardContent({
   allWebsites = false,
 }: DashboardContentProps) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   return (
     <div className="flex">
       <Sidebar onSettingsClick={() => setIsSettingsOpen(true)} />
-      <main className="flex-1 ml-[280px] min-h-screen text-[var(--text-primary)] transition-all">
+      <main className="flex-1 md:ml-[280px] min-h-screen text-[var(--text-primary)] transition-all pt-12 md:pt-0">
         <div className="max-w-full mx-auto px-2 py-3 md:px-3 md:py-4">
           {allWebsites && (
             <div className="mb-4 px-3 py-2 bg-[var(--accent)]/10 border border-[var(--accent)]/30 rounded-lg">
@@ -62,30 +55,6 @@ export default function DashboardContent({
           </div>
 
         <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-        <SidePanel 
-          isOpen={isPanelOpen} 
-          onClose={() => setIsPanelOpen(false)} 
-          title="Menu"
-        >
-          <div className="flex flex-col gap-4">
-            <button
-              onClick={() => {
-                setIsSettingsOpen(true);
-                setIsPanelOpen(false);
-              }}
-              className="flex items-center gap-2 text-sm text-[var(--text-primary)] p-2 rounded-md hover:bg-[var(--surface-elevated)]"
-            >
-              <Cog6ToothIcon className="w-5 h-5" />
-              Settings
-            </button>
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[var(--border)]">
-              <ThemeToggle />
-              <div className="flex-1">
-                <LogoutButton />
-              </div>
-            </div>
-          </div>
-        </SidePanel>
         
         <section className="mb-3">
           <KPICards stats={stats} />

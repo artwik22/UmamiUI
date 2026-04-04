@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChartBarIcon,
   DocumentChartBarIcon,
@@ -11,6 +11,8 @@ import {
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   ChevronLeftIcon,
+  Bars3Icon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import ThemeToggle from './ThemeToggle';
 
@@ -30,11 +32,19 @@ const navItems = [
   { name: 'Websites', icon: GlobeAltIcon, href: '/websites' },
 ];
 
-export default function Sidebar({ onSettingsClick }: SidebarProps) {
+function SidebarContent({
+  onSettingsClick,
+  collapsed,
+  setCollapsed,
+  onClose,
+}: SidebarProps & {
+  collapsed: boolean;
+  setCollapsed: (v: boolean) => void;
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [collapsed, setCollapsed] = useState(false);
   const [websites, setWebsites] = useState<Website[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,18 +73,18 @@ export default function Sidebar({ onSettingsClick }: SidebarProps) {
       params.delete("website");
     }
     router.push(`/?${params.toString()}`);
+    onClose?.();
   };
 
   const defaultWebsiteId = websites[0]?.id || "";
   const selectedWebsiteId = currentWebsiteId || defaultWebsiteId;
-
   const selectedWebsite = websites.find(w => w.id === selectedWebsiteId);
 
   return (
     <motion.aside
       initial={false}
       animate={{ width: collapsed ? 80 : 280 }}
-      className="fixed left-0 top-0 h-screen bg-[var(--surface)] border-r border-[var(--border)] flex flex-col z-40 shadow-lg"
+      className="fixed left-0 top-0 h-screen bg-[var(--surface)] border-r border-[var(--border)] flex flex-col z-50 shadow-lg"
     >
       <div className="p-4 flex items-center justify-between border-b border-[var(--border)] h-16">
         <div className="flex items-center gap-3 overflow-hidden">
@@ -92,12 +102,20 @@ export default function Sidebar({ onSettingsClick }: SidebarProps) {
             </motion.div>
           )}
         </div>
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-all flex-shrink-0"
-        >
-          <ChevronLeftIcon className={`w-5 h-5 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`} />
-        </button>
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="hidden md:flex p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-all"
+          >
+            <ChevronLeftIcon className={`w-5 h-5 transition-transform duration-300 ${collapsed ? 'rotate-180' : ''}`} />
+          </button>
+          <button
+            onClick={onClose}
+            className="md:hidden p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-all"
+          >
+            <XMarkIcon className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {!collapsed && (
@@ -137,6 +155,7 @@ export default function Sidebar({ onSettingsClick }: SidebarProps) {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onClose}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                 isActive
                   ? 'bg-[var(--surface-elevated)] text-[var(--text-primary)] font-semibold'
@@ -148,7 +167,7 @@ export default function Sidebar({ onSettingsClick }: SidebarProps) {
                 <span className="text-sm">{item.name}</span>
               )}
               {isActive && !collapsed && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
               )}
             </Link>
           );
@@ -157,7 +176,10 @@ export default function Sidebar({ onSettingsClick }: SidebarProps) {
 
       <div className="p-3 border-t border-[var(--border)] space-y-2">
         <button
-          onClick={onSettingsClick}
+          onClick={() => {
+            onSettingsClick();
+            onClose?.();
+          }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-all duration-200"
         >
           <Cog6ToothIcon className="w-5 h-5 flex-shrink-0" />
@@ -180,5 +202,64 @@ export default function Sidebar({ onSettingsClick }: SidebarProps) {
         </div>
       </div>
     </motion.aside>
+  );
+}
+
+export default function Sidebar({ onSettingsClick }: SidebarProps) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return (
+    <>
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="md:hidden fixed top-3 left-3 z-40 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-sm text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-colors"
+        aria-label="Open menu"
+      >
+        <Bars3Icon className="w-5 h-5" />
+      </button>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="hidden md:block">
+        <SidebarContent
+          onSettingsClick={onSettingsClick}
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+        />
+      </div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <SidebarContent
+            onSettingsClick={onSettingsClick}
+            collapsed={false}
+            setCollapsed={() => {}}
+            onClose={() => setMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
